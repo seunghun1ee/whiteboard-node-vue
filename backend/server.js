@@ -125,14 +125,30 @@ io.on('connection', (socket) => {
     });
 });
 
-io.on("connection", (socket) => {
+io.on('connection', (socket) => {
+    socket.on('room', (room) => {
+        socket.join(room);
+        console.log('user ' + socket.id + ' connected at room ' + room);
+    })
+    socket.on("share-pdf",(room,data) => {
+        console.log(data);
+        socket.broadcast.to(room).emit("shared-pdf",data);
+    })
+    socket.on('chat message', (chat) => {
+        console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
+        socket.broadcast.to(chat.room).emit('chat message', socket.id, chat.msg);
+    })
     socket.on("record-start", (room) => {
         console.log("record started at", room);
         socket.broadcast.to(room).emit("record-started");
-    });
+    })
     socket.on("record-stop", (room) => {
         console.log("record stopped at", room);
         socket.broadcast.to(room).emit("record-stopped");
+    })
+    socket.on('disconnect', () => {
+        socket.leave();
+        console.log('user ' + socket.id + ' disconnected');
     })
 });
 
