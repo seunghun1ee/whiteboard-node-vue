@@ -3,7 +3,7 @@
     <div class="col-10">
       <p>Broadcast</p>
       <button v-on:click="toggleTTS()" id="toggleTTSButton" class="btn btn-primary">Resume/Pause TTS</button>
-      <button v-on:click="nextTTS()" id="nextTTSButton" class="btn btn-primary">Next TTS</button>
+      <button id="nextTTSButton" class="btn btn-primary">Next TTS</button>
       <button id="cameraButton" class="btn btn-primary">Camera</button>
       <button id="micButton" class="btn btn-primary">Microphone</button>
       <button id="audioButton" class="btn btn-primary">Audio</button>
@@ -42,16 +42,15 @@
 </template>
 
 <script>
+import {appendChat, speech, toggleTTS, nextTTS} from "@/liveTTSChat";
+import {Toast} from "bootstrap";
 
 const room = location.pathname;
 const receivedChats = [];
-let speechSynth = window.speechSynthesis;
-
-function speech(textToSpeech) {
-  let utterance = new SpeechSynthesisUtterance(textToSpeech);
-  console.log("Chat is being speeched");
-  speechSynth.speak(utterance);
-}
+let bootstrapAlert = null;
+let initialReminderTimer = null;
+let reminderTimer = null;
+let recordState = false;
 
 export default {
   name: "live",
@@ -68,13 +67,19 @@ export default {
       const id = data[0];
       const msg = data[1];
       let userId = id.substr(0,4);
-      this.appendChat(chatSpace,userId,msg);
-      if(!speechSynth.paused) {
+      appendChat(chatSpace,userId,msg);
+      if(!window.speechSynthesis.paused) {
         speech(msg);
       }
       receivedChats.push(msg);
       window.scrollTo(0, document.body.scrollHeight);
 
+    },
+    record_started: function () {
+      this.startRecording();
+    },
+    record_stopped: function () {
+      this.stopRecording();
     }
   },
   created() {
@@ -83,43 +88,75 @@ export default {
   },
   mounted() {
     const vue = this;
+    //Chat functions
     const form = document.getElementById("chatForm");
     const input = document.getElementById("textInput");
     const chatSpace = document.getElementById("chatSpace");
-
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       if (input.value) {
         // let myId = this.$socket.id.substr(0,4);
-        vue.appendChat(chatSpace,"myId",input.value)
+        appendChat(chatSpace,"myId",input.value)
         vue.$socket.emit('chat_message', {msg: input.value, room:room});
         input.value = '';
       }
     });
+    // TTS functions
+    const nextTTSButton = document.getElementById("nextTTSButton");
+    nextTTSButton.addEventListener("click", () => {
+      nextTTS(receivedChats);
+    });
+    // Recording reminder functions
+    const recordRemindToast = document.getElementById("remindToast");
+    bootstrapAlert = new Toast(recordRemindToast, {animation: true, autohide: false});
+    const recordButton = document.getElementById("recordButton");
+    const toastRecordButton = document.getElementById("toastRecordButton");
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+      initialReminderTimer = window.setTimeout(vue.initialReminder, 5000); // change time later
+
+      //Recording starts, disable all reminders
+      recordButton.onclick = () => {
+        vue.recordButtonControl();
+      }
+      toastRecordButton.onclick = () => {
+        vue.recordButtonControl();
+      }
+
+    });
   },
   methods: {
-    appendChat: function (chatSpace,id,msg) {
-      let item = document.createElement('li');
-      item.textContent = id + ": " + msg;
-      chatSpace.appendChild(item);
+    toggleTTS,
+    initialReminder: function () {
+      console.log("first reminder");
+      bootstrapAlert.show();
+      reminderTimer = window.setInterval(this.reminder, 10000); // change time later
     },
-    nextTTS: function () {
-      if(receivedChats.length > 0) {
-        let msg = receivedChats.shift();
-        speechSynth.resume();
-        speech(msg);
-      }
+    reminder: function() {
+      bootstrapAlert.show();
+      console.log("reminder");
     },
-    toggleTTS: function() {
-      if(speechSynth.paused) {
-        console.log("resume speaking");
-        speechSynth.resume();
+    recordButtonControl: function () {
+      if(recordState) {
+        this.$socket.emit("record_stop",room);
+        this.stopRecording();
       }
       else {
-        console.log("pause speaking");
-        speechSynth.pause();
+        this.$socket.emit("record_start",room);
+        this.startRecording();
       }
-      console.log(speechSynth);
+    },
+    startRecording: function () {
+      console.log("recording starts");
+      recordState = true;
+      window.clearTimeout(initialReminderTimer);
+      window.clearInterval(reminderTimer);
+      bootstrapAlert.dispose();
+    },
+    stopRecording: function () {
+      console.log("recording stopped");
+      recordState = false;
     }
   }
 }

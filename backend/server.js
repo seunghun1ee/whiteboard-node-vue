@@ -138,13 +138,13 @@ io.on('connection', (socket) => {
         console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
         socket.broadcast.to(chat.room).emit('chat message', socket.id, chat.msg);
     })
-    socket.on("record-start", (room) => {
+    socket.on("record_start", (room) => {
         console.log("record started at", room);
-        socket.broadcast.to(room).emit("record-started");
+        socket.broadcast.to(room).emit("record_started");
     })
-    socket.on("record-stop", (room) => {
+    socket.on("record_stop", (room) => {
         console.log("record stopped at", room);
-        socket.broadcast.to(room).emit("record-stopped");
+        socket.broadcast.to(room).emit("record_stopped");
     })
     socket.on('disconnect', () => {
         socket.leave();
