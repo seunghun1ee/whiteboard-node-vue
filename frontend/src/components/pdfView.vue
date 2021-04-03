@@ -1,9 +1,6 @@
 <template>
   <div>
-    <form>
-      <input v-on:change="getUrlFile" id="shareFileUrlInput" type="url" class="form-control form-control-sm" placeholder="File URL">
-      <button type="submit" class="btn-sm btn-primary">Enter</button>
-    </form>
+    <input v-on:change="getUrlFile" id="shareFileUrlInput" type="url" class="form-control form-control-sm" placeholder="File URL">
     <input v-on:change="getLocalFile" id="shareFileLocalInput" type="file" class="form-control form-control-sm">
     <pdf-document v-bind="{url,data,scale}" :key="url + data"></pdf-document>
   </div>

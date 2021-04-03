@@ -1,6 +1,8 @@
 <template>
   <div>
-    <pdf-page v-for="page in pages" v-bind="{page, scale}" :key="page.pageNumber"></pdf-page>
+    <button v-on:click="prevPage" class="btn btn-primary">prev</button>
+    <button v-on:click="nextPage" class="btn btn-primary">next</button>
+    <pdf-page v-if="pages[currentPage]" v-bind="{page:pages[currentPage],scale:scale}" :key="currentPage"></pdf-page>
   </div>
 </template>
 
@@ -15,7 +17,8 @@ export default {
   data() {
     return {
       pdf: undefined,
-      pages: []
+      pages: [],
+      currentPage: 0
     }
   },
   created() {
@@ -37,11 +40,22 @@ export default {
         this.pdf = pdf
         console.log("get document done",this.pdf);
       });
+    },
+    nextPage() {
+      if(this.currentPage < this.pages.length - 1) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if(this.currentPage > 0) {
+        this.currentPage--;
+      }
     }
   },
   watch: {
     pdf: function (pdf) {
       this.pages = [];
+      this.currentPage = 0;
       console.log("pdf watcher",pdf);
       const pagePromises = lodashRange(1, pdf.numPages)
           .map(number => pdf.getPage(number));
