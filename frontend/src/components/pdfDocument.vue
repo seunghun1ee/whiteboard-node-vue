@@ -10,7 +10,7 @@ import PdfPage from "@/components/pdfPage";
 
 export default {
   name: "pdfDocument",
-  props: ["url", "scale"],
+  props: ["url","data","scale"],
   components: {PdfPage},
   data() {
     return {
@@ -26,7 +26,13 @@ export default {
       import("pdfjs-dist")
         .then(pdfjs => {
           pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js";
-          return pdfjs.getDocument(this.url).promise;
+          if(this.url) {
+            return pdfjs.getDocument(this.url).promise;
+          }
+          else if(this.data) {
+            return pdfjs.getDocument({data:this.data}).promise;
+          }
+          return null;
         }).then(pdf => {
         this.pdf = pdf
         console.log("get document done",this.pdf);
