@@ -9,6 +9,7 @@
       <button id="audioButton" class="btn btn-primary">Audio</button>
       <button id="recordButton" class="btn btn-danger">Record</button>
       <button id="screenButton" class="btn btn-primary">Share screen</button>
+      <pdf-view></pdf-view>
 
       <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 5">
         <div id="remindToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
@@ -44,6 +45,7 @@
 <script>
 import {appendChat, speech, toggleTTS, nextTTS} from "@/liveTTSChat";
 import {Toast} from "bootstrap";
+import PdfView from "@/components/pdfView";
 
 const room = location.pathname;
 const receivedChats = [];
@@ -54,6 +56,7 @@ let recordState = false;
 
 export default {
   name: "live",
+  components: {PdfView},
   sockets: {
     connect: function () {
       console.log("socket connected");
