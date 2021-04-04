@@ -3,10 +3,10 @@
     <h1>COMS10000 CS Basics Forum</h1>
     <hr>
     <h2>Post title</h2>
+    <p class="mb-0">No tags</p>
     <div class="mb-3">
       <a>Author</a>
       <small class="text-muted"> | 31/12/2021 - 09:20</small>
-      <small> | No tags</small>
       <small> | 0 Comments</small>
     </div>
     <div class="mb-5">
@@ -23,6 +23,12 @@
         <hr>
       </div>
     </div>
+
+    <div>
+      <textarea placeholder="Leave comment"></textarea>
+      <button class="btn-sm btn-primary">Comment</button>
+    </div>
+
   </div>
 </template>
 
