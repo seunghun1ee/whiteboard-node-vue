@@ -108,35 +108,17 @@ io.on('connection', (socket) => {
         socket.join(room);
         console.log('user ' + socket.id + ' connected at room ' + room);
     })
-    socket.on('disconnect', () => {
-        socket.leave();
-        console.log('user ' + socket.id + ' disconnected');
-    })
     socket.on("save_new_post",(data) => {
         console.log(data.room,data.post);
         socket.broadcast.to(data.room).emit("new_post",data.post);
     })
-});
-
-io.on('connection', (socket) => {
     socket.on('chat_message', (chat) => {
         console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
         socket.broadcast.to(chat.room).emit('chat_message', socket.id, chat.msg);
     });
-});
-
-io.on('connection', (socket) => {
-    socket.on('room', (room) => {
-        socket.join(room);
-        console.log('user ' + socket.id + ' connected at room ' + room);
-    })
     socket.on("share-pdf",(room,data) => {
         console.log(data);
         socket.broadcast.to(room).emit("shared-pdf",data);
-    })
-    socket.on('chat message', (chat) => {
-        console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
-        socket.broadcast.to(chat.room).emit('chat message', socket.id, chat.msg);
     })
     socket.on("record_start", (room) => {
         console.log("record started at", room);
@@ -151,6 +133,40 @@ io.on('connection', (socket) => {
         console.log('user ' + socket.id + ' disconnected');
     })
 });
+
+// io.on('connection', (socket) => {
+//     socket.on('chat_message', (chat) => {
+//         console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
+//         socket.broadcast.to(chat.room).emit('chat_message', socket.id, chat.msg);
+//     });
+// });
+
+// io.on('connection', (socket) => {
+//     socket.on('room', (room) => {
+//         socket.join(room);
+//         console.log('user ' + socket.id + ' connected at room ' + room);
+//     })
+//     socket.on("share-pdf",(room,data) => {
+//         console.log(data);
+//         socket.broadcast.to(room).emit("shared-pdf",data);
+//     })
+//     socket.on('chat message', (chat) => {
+//         console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
+//         socket.broadcast.to(chat.room).emit('chat message', socket.id, chat.msg);
+//     })
+//     socket.on("record_start", (room) => {
+//         console.log("record started at", room);
+//         socket.broadcast.to(room).emit("record_started");
+//     })
+//     socket.on("record_stop", (room) => {
+//         console.log("record stopped at", room);
+//         socket.broadcast.to(room).emit("record_stopped");
+//     })
+//     socket.on('disconnect', () => {
+//         socket.leave();
+//         console.log('user ' + socket.id + ' disconnected');
+//     })
+// });
 
 http.listen(port, () => {
     console.log('listening on *:' + port);

@@ -6,17 +6,51 @@ import index from '@/components/index.vue';
 import forum from '@/components/forum.vue';
 import live from '@/components/live.vue';
 import pdfView from "@/components/pdfView";
+import io from "socket.io-client"
+import VueSocketIO from "vue-socket.io";
 
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
+const socketTarget = "http://localhost:3000"
+function setSocketIO() {
+    if (!Vue.prototype.$socket) {
+        Vue.use(new VueSocketIO({
+            debug: true,
+            connection: io(socketTarget)
+        }))
+    }
+}
 
 const routes = [
-    { path: "/", component: index},
-    { path: "/units/:id/", component: unit},
-    { path: "/units/:id/forum/", component: forum},
-    { path: "/live/", component: live},
-    { path: "/test/", component: pdfView}
+    {
+        path: "/",
+        component: index
+    },
+    {
+        path: "/units/:id/",
+        component: unit
+    },
+    {
+        path: "/units/:id/forum/",
+        component: forum,
+        beforeEnter(to,from,next) {
+            setSocketIO();
+            next()
+        }
+    },
+    {
+        path: "/live/",
+        component: live,
+        beforeEnter(to,from,next) {
+            setSocketIO();
+            next()
+        }
+    },
+    {
+        path: "/test/",
+        component: pdfView
+    }
 ];
 
 export const router = new VueRouter({

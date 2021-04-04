@@ -67,14 +67,6 @@
 import {getPostsByUnitId, savePost} from "@/postRepository";
 import {getUsers} from "@/userRepository";
 import {getUnitById} from "@/unitRepository";
-import Vue from 'vue'
-import io from "socket.io-client"
-import VueSocketIO from "vue-socket.io";
-
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: io("http://localhost:3000")
-}));
 const room = location.pathname;
 
 export default {
