@@ -23,48 +23,7 @@
 
       </div>
     </div>
-    <div class="collapse" id="collapseExample">
-      <div class="card card-body">
-        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-      </div>
-    </div>
-    <article id="posts">
-      <article v-for="post in posts" v-bind:key="post.id" class="mb-3">
-        <div class="card" v-if="post.parent == null" v-bind:id="'post#'+ post.id">
-          <div class="card-header">
-            <span v-if="post.title">{{post.title}}</span>
-            <span v-else>No Title</span>
-<!--            <span v-for="tag in post.tags" v-bind:key="tag" class="badge bg-primary">{{tag.name}}</span>-->
-            <small v-if="post.isAnonymous"> - Anonymous</small>
-            <small v-else-if="users[post.uploader]"> - {{users[post.uploader].name}}</small>
-            <small v-else> - No user</small>
-          </div>
-          <div class="card-body">
-            <p class="card-text">{{post.message}}</p>
-
-            <!--Children posts-->
-            <div v-for="child in post.children" v-bind:key="child" v-bind:id="'post#' + child" class="card">
-              <div class="card-header" v-bind="childPost = posts[child]">
-                <small v-if="childPost.isAnonymous">Anonymous</small>
-                <small v-else-if="users[childPost.uploader]">{{users[childPost.uploader].name}}</small>
-                <small v-else> - No user</small>
-              </div>
-              <div class="card-body">
-                <h5 v-if="childPost.title" class="card-title">{{childPost.title}}</h5>
-                <p class="card-text">{{childPost.message}}</p>
-              </div>
-            </div>
-
-            <div>
-              <form>
-                <input id="replyInput" class="form-control" placeholder="Reply">
-                <button class="btn btn-primary">Post</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </article>
-    </article>
+    <post-list v-bind:posts="posts"></post-list>
   </div>
 </template>
 
@@ -72,10 +31,12 @@
 import {getPostsByUnitId, savePost} from "@/postRepository";
 import {getUsers} from "@/userRepository";
 import {getUnitById} from "@/unitRepository";
+import PostList from "@/components/postList";
 const room = location.pathname;
 
 export default {
   name: "forum",
+  components: {PostList},
   data() {
     return {
       unit: {},

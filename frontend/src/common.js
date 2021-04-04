@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import io from "socket.io-client"
+import VueSocketIO from "vue-socket.io";
 
 import unit from "@/components/unit";
 import index from '@/components/index.vue';
 import forum from '@/components/forum.vue';
 import live from '@/components/live.vue';
-import pdfView from "@/components/pdfView";
-import io from "socket.io-client"
-import VueSocketIO from "vue-socket.io";
+import post from "@/components/post";
+import postView from "@/components/postView";
 
 
 Vue.config.productionTip = false
@@ -49,7 +50,11 @@ const routes = [
     },
     {
         path: "/test/",
-        component: pdfView
+        component: post
+    },
+    {
+        path: "/units/:id/forum/posts/:postId",
+        component: postView
     }
 ];
 
