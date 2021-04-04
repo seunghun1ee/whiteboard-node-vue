@@ -1,6 +1,6 @@
 <template>
   <div>
-    <post class="mb-3" v-for="post in posts" v-bind:post-data="post" :key="post.id"></post>
+    <post class="mb-0" v-for="post in posts" v-bind:post-data="post" :key="post.id"></post>
   </div>
 </template>
 
