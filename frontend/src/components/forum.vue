@@ -23,6 +23,11 @@
 
       </div>
     </div>
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body">
+        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+      </div>
+    </div>
     <article id="posts">
       <article v-for="post in posts" v-bind:key="post.id" class="mb-3">
         <div class="card" v-if="post.parent == null" v-bind:id="'post#'+ post.id">
@@ -87,7 +92,7 @@ export default {
     },
     new_post: function (post) {
       console.log("new post incoming",post);
-      this.posts.unshift(post);
+      this.posts.push(post);
     }
   },
   created() {
@@ -116,7 +121,7 @@ export default {
       let post = {unit: Number(this.$route.params.id), title: titleInput.value, message: message.value, parent: null, children: [], tags: []}
       savePost(post)
           .then(newPost => {
-            this.posts.unshift(newPost);
+            this.posts.push(newPost);
             vue.$socket.emit("save_new_post",{post: newPost,room:room});
           })
           .catch(err => alert(err));
