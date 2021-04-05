@@ -1,3 +1,6 @@
+//environment
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
@@ -10,6 +13,15 @@ const io = require("socket.io")(http, {
 });
 const bodyParser = require("body-parser");
 const cors = require("cors");
+//DB
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => console.log("Successful MongoDB connection"))
+    .catch(err => console.error(err));
+const Unit = require("./models/unit");
+const Post = require("./models/post");
+const Comment = require("./models/comment");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -100,7 +112,102 @@ app.post("/api/posts/newPost", (req,res) => {
     newPost.isAnonymous = false;
     posts.push(newPost);
     res.send(newPost);
-})
+});
+
+app.get("/api/test", (req,res) => {
+    Post.deleteMany({}).catch(err => console.log(err));
+    Unit.deleteMany({}).catch(err => console.log(err));
+    let coms10000 = new Unit({
+        code: "COMS10000",
+        title: "CS Basics",
+        director: "Alice Wonderland",
+        staffs: [],
+        students: []
+    });
+    let coms10001 = new Unit({
+        code: "COMS10001",
+        title: "Theory of Computation",
+        director: "Brad Cornwall",
+        staffs: [],
+        students: []
+    });
+    let coms10002 = new Unit({
+        code: "COMS10002",
+        title: "Security",
+        director: "Claire Smith",
+        staffs: ["David Wilson"],
+        students: []
+    });
+    coms10000.save().catch(err => {
+        console.log(err);
+        res.send("unit save error");
+    });
+    coms10001.save().catch(err => {
+        console.log(err);
+        res.send("unit save error");
+    });
+    coms10002.save().catch(err => {
+        console.log(err);
+        res.send("unit save error");
+    });
+    let post0 = new Post({
+        unitId: coms10000._id,
+        title: "Need help on x",
+        author: "Alice Wonderland",
+        tags: [],
+        body: "Hi, why does x behave like y?",
+        anonymous: false,
+        comments: [
+            new Comment({
+                author: "Brad Cornwall",
+                body: "Hi Alice, it's because x = y. Hope this helps.",
+                anonymous: false
+            }),
+            new Comment({
+                author: "Alice Wonderland",
+                body: "Thanks Brad",
+                anonymous: false
+            })
+        ]
+    });
+    let post1 = new Post({
+        unitId: coms10000._id,
+        title: "This is anonymous post",
+        author: "Brad Cornwall",
+        tags: [],
+        body: "Author should be invisible",
+        anonymous: true,
+        comments: [
+            new Comment({
+                author: "Brad Cornwall",
+                body: "This is anonymous reply",
+                anonymous: true
+            })
+        ]
+    });
+    let post2 = new Post({
+        unitId: coms10001._id,
+        title: "Welcome to Theory of Computation",
+        author: "Claire Smith",
+        tags: [],
+        body: "Hi",
+        anonymous: false,
+        comments: []
+    });
+    post0.save().catch(err => {
+        console.log(err);
+        res.send("post save error");
+    });
+    post1.save().catch(err => {
+        console.log(err);
+        res.send("post save error");
+    });
+    post2.save().catch(err => {
+        console.log(err);
+        res.send("post save error");
+    });
+    res.send("test data loaded");
+});
 
 io.on('connection', (socket) => {
     console.log("connection");
