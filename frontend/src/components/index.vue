@@ -7,8 +7,8 @@
       <div class="col">
         <h3>My units</h3>
         <ul>
-          <li v-for="unit in units" v-bind:key="unit.id">
-            <a v-bind:href="'/units/' + unit.id">{{unit.code}} {{unit.name}}</a>
+          <li v-for="unit in units" v-bind:key="unit._id">
+            <a v-bind:href="'/units/' + unit._id">{{unit.code}} {{unit.title}}</a>
           </li>
         </ul>
       </div>
@@ -26,7 +26,7 @@
     <div>
       <h3>Live Sessions</h3>
       <ul>
-        <li><a href="/live/">COMS10000 CS Basics</a></li>
+        <li><a v-bind:href="'/live/'">COMS10000 CS Basics</a></li>
       </ul>
     </div>
     <hr>
@@ -61,9 +61,12 @@ export default {
   methods: {
 
   },
-  mounted() {
+  created() {
     getUnits()
-        .then(data => this.units = data)
+        .then(data => {
+          this.units = data
+          console.log(data);
+        })
         .catch(err => alert(err));
     getVideos()
         .then(data => this.videos = data)
