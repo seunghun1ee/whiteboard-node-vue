@@ -1,15 +1,15 @@
 <template>
   <div>
     <div>
-      <h1>{{unit.code}} {{unit.name}}</h1>
+      <h1>{{unit.code}} {{unit.title}}</h1>
       <p>Unit director: {{unit.director}}</p>
       <p>Staffs:</p>
     </div>
     <div>
       <h2>Unit forums</h2>
       <ul>
-        <li><a v-bind:href="unit.id + '/forum/'">Discussion forum</a></li>
-        <li><a href="#">Announcments</a></li>
+        <li><a v-bind:href="unit._id + '/forum/'">Discussion forum</a></li>
+        <li><a href="#">Announcements</a></li>
       </ul>
     </div>
     <div>
@@ -40,7 +40,7 @@ export default {
   methods: {
 
   },
-  mounted() {
+  created() {
     getUnitById(this.$route.params.id).then(data => this.unit = data).catch(err => alert(err));
     console.log(this.$route.params);
   }

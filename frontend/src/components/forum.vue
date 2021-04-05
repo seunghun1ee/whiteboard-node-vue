@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{unit.code}} {{unit.name}} Forum</h1>
+    <h1>{{unit.code}} {{unit.title}} Forum</h1>
     <hr>
     <p>
       <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNewPost" aria-expanded="false" aria-controls="collapseNewPost">
@@ -10,8 +10,8 @@
     <div class="collapse" id="collapseNewPost">
       <div class="mb-3">
         <form>
-          <label class="form-label" for="newPostTitleInput">Title (optional)</label>
-          <input class="form-control" type="text" id="newPostTitleInput" name="title">
+          <label class="form-label" for="newPostTitleInput">Title</label>
+          <input class="form-control" type="text" id="newPostTitleInput" name="title" required>
           <label class="form-label" for="newPostTextarea">Post message</label>
           <textarea class="form-control" id="newPostTextarea" rows="3" name="message" required></textarea>
           <div class="form-check form-switch">

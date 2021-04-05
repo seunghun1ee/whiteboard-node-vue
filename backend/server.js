@@ -72,12 +72,16 @@ app.get("/api/users",(req,res) => {
 });
 
 app.get("/api/units", (req,res) => {
-    res.send(units);
+    Unit.find({}).then(units => {
+        res.send(units.map(unit => unit.toJSON()));
+    }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
 app.get("/api/units/:id", (req,res) => {
-    let unitId = Number(req.params.id);
-    res.send(units[unitId]);
+    let unitId = req.params.id;
+    Unit.findOne({_id: unitId}).then(unit => {
+        res.send(unit.toJSON());
+    }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
 app.get("/api/videos", (req, res) => {
@@ -85,23 +89,23 @@ app.get("/api/videos", (req, res) => {
 });
 
 app.get("/api/posts", (req,res) => {
-   res.send(posts);
+   Post.find({}).then(posts => {
+       res.send(posts.map(post => post.toJSON()));
+   }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
 app.get("/api/posts/:id", (req,res) => {
-    let postId = Number(req.params.id);
-    res.send(posts[postId]);
+    let postId = req.params.id;
+    Post.find({_id: postId}).then(posts => {
+        res.send(posts.map(post => post.toJSON()));
+    }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
 app.get("/api/posts/unitId/:id", (req,res) => {
-    let unitId = Number(req.params.id);
-    const matchingPosts = [];
-    posts.forEach(post => {
-        if(post.unit === unitId) {
-            matchingPosts.push(post);
-        }
-    });
-    res.send(matchingPosts);
+    let unitId = req.params.id;
+    Post.find({unitId: unitId}).then(posts => {
+        res.send(posts.map(post => post.toJSON()));
+    }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
 app.post("/api/posts/newPost", (req,res) => {
