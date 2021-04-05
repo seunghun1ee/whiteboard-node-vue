@@ -2,8 +2,11 @@
   <div>
     <div>
       <h1>{{unit.code}} {{unit.title}}</h1>
-      <p>Unit director: {{unit.director}}</p>
-      <p>Staffs:</p>
+      <p class="mb-0">Unit director: {{unit.director}}</p>
+      <p v-if="unit.staffs.length > 0" class="mb-0">Staffs</p>
+      <ul v-if="unit.staffs.length > 0">
+        <li v-for="staff in unit.staffs" :key="staff">{{staff}}</li>
+      </ul>
     </div>
     <div>
       <h2>Unit forums</h2>
