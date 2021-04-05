@@ -1,27 +1,26 @@
 <template>
   <div>
-    <h1>COMS10000 CS Basics Forum</h1>
+    <h1><a v-if="unit" v-bind:href="'/units/'+unit._id+'/forum/'">{{unit.code}} {{unit.title}} Forum</a></h1>
     <hr>
-    <h2>Post title</h2>
-    <p class="mb-0">No tags</p>
-    <div class="mb-3">
-      <a>Author</a>
-      <small class="text-muted"> | 31/12/2021 - 09:20</small>
-      <small> | 0 Comments</small>
-    </div>
-    <div class="mb-5">
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id sem sit amet tortor imperdiet gravida eget eu quam. Aliquam libero ligula, vestibulum et ultricies at, vulputate vel purus. Proin finibus neque vel blandit porttitor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultricies accumsan justo, eu consequat risus fringilla eu. Integer id lorem pulvinar, scelerisque velit ac, hendrerit justo. Integer porta posuere odio eget congue. </p>
-    </div>
-
-    <div>
-      <p>Comments</p>
-      <hr>
-      <div>
-        <a>Author</a>
-        <small class="text-muted"> | 31/12/2021 - 09:20</small>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id sem sit amet tortor imperdiet gravida eget eu quam. Aliquam libero ligula, vestibulum et ultricies at, vulputate vel purus. Proin finibus neque vel blandit porttitor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultricies accumsan justo, eu consequat risus fringilla eu. Integer id lorem pulvinar, scelerisque velit ac, hendrerit justo. Integer porta posuere odio eget congue. </p>
-        <hr>
+    <div v-if="post">
+      <h2>{{post.title}}</h2>
+      <div v-if="post.tags.length > 0">
+        <p v-for="tag in post.tags" :key="tag">{{tag}} | </p>
       </div>
+      <p v-else class="mb-0">No tags</p>
+
+      <div class="mb-3">
+        <a v-if="post.anonymous">Anonymous</a>
+        <a v-else>{{post.author}}</a>
+        <small class="text-muted"> | {{new Intl.DateTimeFormat("en-GB",this.dateFormatOption).format(new Date(post.createdAt))}}</small>
+      </div>
+      <div class="mb-5">
+        <p>{{post.body}}</p>
+      </div>
+      <small v-if="post.comments.length === 1" :key="post.comments.length">1 Comment</small>
+      <small v-else :key="post.comments.length">{{post.comments.length}} Comments</small>
+      <hr>
+      <comment v-for="comment in post.comments" :key="comment.body" v-bind:comment-data="comment"></comment>
     </div>
 
     <div>
@@ -33,8 +32,39 @@
 </template>
 
 <script>
+import {getUnitById} from "@/unitRepository";
+import {getPostById} from "@/postRepository";
+import unit from "@/components/unit";
+import Comment from "@/components/comment";
+
 export default {
-  name: "postView"
+  name: "postView",
+  components: {Comment},
+  data() {
+    return {
+      unit: null,
+      post: null,
+      dateFormatOption: {
+        dateStyle: "medium",
+        timeStyle: "medium"
+      }
+    }
+  },
+  created() {
+    console.log(this.$route.params);
+    let unitId = this.$route.params.id;
+    let postId = this.$route.params.postId;
+    getUnitById(unitId).then(data => {
+      this.unit = data;
+      console.log(unit);
+    })
+    getPostById(postId)
+        .then(data => {
+          this.post = data;
+          console.log(data);
+        })
+        .catch(err => alert(err));
+  }
 }
 </script>
 

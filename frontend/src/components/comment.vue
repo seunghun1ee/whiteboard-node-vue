@@ -1,6 +1,7 @@
 <template>
   <div>
-    <a>{{commentData.author}}</a>
+    <a v-if="commentData.anonymous">Anonymous</a>
+    <a v-else>{{commentData.author}}</a>
     <small class="text-muted"> | 31/12/2021 - 09:20</small>
     <p>{{commentData.body}}</p>
     <hr>

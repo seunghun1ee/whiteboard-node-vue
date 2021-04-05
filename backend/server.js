@@ -96,8 +96,8 @@ app.get("/api/posts", (req,res) => {
 
 app.get("/api/posts/:id", (req,res) => {
     let postId = req.params.id;
-    Post.find({_id: postId}).then(posts => {
-        res.send(posts.map(post => post.toJSON()));
+    Post.findOne({_id: postId}).then(post => {
+        res.send(post.toJSON());
     }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
