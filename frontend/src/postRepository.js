@@ -16,3 +16,8 @@ export function getPostsByUnitId(unitId) {
 export function savePost(post) {
     return axios.post(BASE_URL + "/api/posts/newPost",post).then(res => res.data);
 }
+
+// This is part of post repository for now
+export function saveComment(postId, comment) {
+    return axios.patch(BASE_URL + `/api/posts/${postId}/newComment`,comment).then(res => res.data);
+}

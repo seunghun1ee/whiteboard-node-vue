@@ -109,7 +109,6 @@ app.get("/api/posts/unitId/:id", (req,res) => {
 });
 
 app.post("/api/posts/newPost", (req,res) => {
-    console.log(req.body);
     let newPost = new Post({
         unitId: mongoose.Types.ObjectId(req.body.unitId), //convert string to ObjectId
         title: req.body.title,
@@ -127,6 +126,19 @@ app.post("/api/posts/newPost", (req,res) => {
         res.status(500).send(`Post Save error ${err}`);
     });
 });
+
+app.patch("/api/posts/:postId/newComment", (req,res) => {
+    console.log(req.body);
+    let newComment = new Comment({
+        author: req.body.author,
+        body: req.body.body,
+        anonymous: req.body.anonymous
+    });
+    Post.updateOne({_id: req.params.postId},{$push: {comments: newComment}}).then(() => {
+        console.log("new comment saved");
+        res.send(newComment);
+    })
+})
 
 app.get("/api/test", (req,res) => {
     Post.deleteMany({}).catch(err => console.log(err));
@@ -233,10 +245,14 @@ io.on('connection', (socket) => {
         console.log(data.room,data.post);
         socket.broadcast.to(data.room).emit("new_post",data.post);
     })
+    socket.on("save_new_comment", (comment,room) => {
+        console.log(room, comment);
+        socket.broadcast.to(room).emit("new_comment",comment);
+    })
     socket.on('chat_message', (chat) => {
         console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
         socket.broadcast.to(chat.room).emit('chat_message', socket.id, chat.msg);
-    });
+    })
     socket.on("share-pdf",(room,data) => {
         console.log(data);
         socket.broadcast.to(room).emit("shared-pdf",data);

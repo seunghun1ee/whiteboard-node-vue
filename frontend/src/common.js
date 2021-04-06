@@ -10,7 +10,6 @@ import live from '@/components/live.vue';
 import post from "@/components/post/post";
 import postView from "@/components/post/postView";
 
-
 Vue.config.productionTip = false
 Vue.use(VueRouter);
 const socketTarget = "http://localhost:3000"
@@ -54,7 +53,11 @@ const routes = [
     },
     {
         path: "/units/:id/forum/posts/:postId",
-        component: postView
+        component: postView,
+        beforeEnter(to,from,next) {
+            setSocketIO();
+            next()
+        }
     }
 ];
 
