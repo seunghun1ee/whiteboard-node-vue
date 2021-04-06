@@ -11,7 +11,7 @@
       <button id="screenButton" class="btn btn-primary">Share screen</button>
       <pdf-view></pdf-view>
 
-      <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 5">
+      <div id="reminder" class="position-fixed bottom-0 start-0 p-3" style="z-index: 5">
         <div id="remindToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="toast-body">
             This is a friendly reminder to record your lecture :)
@@ -156,6 +156,8 @@ export default {
       window.clearTimeout(initialReminderTimer);
       window.clearInterval(reminderTimer);
       bootstrapAlert.dispose();
+      const reminder = document.getElementById("reminder");
+      reminder.remove();
     },
     stopRecording: function () {
       console.log("recording stopped");
