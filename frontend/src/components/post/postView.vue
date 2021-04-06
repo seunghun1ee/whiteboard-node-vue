@@ -23,10 +23,7 @@
       <comment v-for="comment in post.comments" :key="comment.body" v-bind:comment-data="comment"></comment>
     </div>
 
-    <div>
-      <textarea placeholder="Leave comment"></textarea>
-      <button class="btn-sm btn-primary">Comment</button>
-    </div>
+    <new-comment-form @newCommentSaved="onNewCommentSaved"></new-comment-form>
 
   </div>
 </template>
@@ -36,10 +33,11 @@ import {getUnitById} from "@/unitRepository";
 import {getPostById} from "@/postRepository";
 import unit from "@/components/unit";
 import Comment from "@/components/post/comment";
+import NewCommentForm from "@/components/post/newCommentForm";
 
 export default {
   name: "postView",
-  components: {Comment},
+  components: {NewCommentForm, Comment},
   data() {
     return {
       unit: null,
@@ -64,6 +62,11 @@ export default {
           console.log(data);
         })
         .catch(err => alert(err));
+  },
+  methods: {
+    onNewCommentSaved(newComment) {
+      this.post.comments.push(newComment);
+    }
   }
 }
 </script>
