@@ -54,13 +54,15 @@ export default {
   },
   watch: {
     pdf: function (pdf) {
-      this.pages = [];
-      this.currentPage = 0;
-      console.log("pdf watcher",pdf);
-      const pagePromises = lodashRange(1, pdf.numPages)
-          .map(number => pdf.getPage(number));
-      Promise.all(pagePromises)
-          .then(pages => {this.pages = pages; console.log(this.pages)});
+      if(pdf) {
+        this.pages = [];
+        this.currentPage = 0;
+        console.log("pdf watcher",pdf);
+        const pagePromises = lodashRange(1, pdf.numPages)
+            .map(number => pdf.getPage(number));
+        Promise.all(pagePromises)
+            .then(pages => {this.pages = pages; console.log(this.pages)});
+      }
     }
   }
 }
