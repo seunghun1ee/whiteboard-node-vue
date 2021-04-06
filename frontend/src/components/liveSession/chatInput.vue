@@ -26,7 +26,7 @@ export default {
       const vue = this;
       console.log(this.chatMessage,room);
       this.$emit("chatSent",this.chatMessage);
-      vue.$socket.emit("chat_message",{room:room,msg:this.chatMessage});
+      vue.$socket.emit("send_chat",this.chatMessage,room,"");
       this.chatMessage = "";
       this.isChatEmpty = true;
       e.preventDefault();
