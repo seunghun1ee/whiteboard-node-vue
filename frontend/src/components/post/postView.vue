@@ -35,6 +35,7 @@ import unit from "@/components/unit";
 import Comment from "@/components/post/comment";
 import NewCommentForm from "@/components/post/newCommentForm";
 
+const room = location.pathname;
 export default {
   name: "postView",
   components: {NewCommentForm, Comment},
@@ -48,6 +49,11 @@ export default {
       }
     }
   },
+  sockets: {
+    new_comment: function (comment) {
+      this.post.comments.push(comment);
+    }
+  },
   created() {
     console.log(this.$route.params);
     let unitId = this.$route.params.id;
@@ -55,7 +61,7 @@ export default {
     getUnitById(unitId).then(data => {
       this.unit = data;
       console.log(unit);
-    })
+    }).catch(err => alert(err));
     getPostById(postId)
         .then(data => {
           this.post = data;
@@ -63,9 +69,14 @@ export default {
         })
         .catch(err => alert(err));
   },
+  mounted() {
+    this.$socket.emit("room",room);
+  },
   methods: {
     onNewCommentSaved(newComment) {
+      const vue = this;
       this.post.comments.push(newComment);
+      vue.$socket.emit("save_new_comment",newComment,room);
     }
   }
 }
