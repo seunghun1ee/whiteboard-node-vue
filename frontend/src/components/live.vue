@@ -25,18 +25,18 @@
     </div>
     <div class="col-2">
       <p>Chat</p>
-      <div>
-        <ul id="chatSpace">
-        </ul>
-      </div>
-      <div id="chatBox" class="ms-auto col-2 fixed-bottom">
-        <form id="chatForm" autocomplete="off">
-          <label for="textInput" class="form-label">Chat</label>
-          <input id="textInput" type="text" class="form-control">
-          <button type="submit" id="speechButton" class="btn btn-primary">Send</button>
-        </form>
-      </div>
-
+<!--      <div>-->
+<!--        <ul id="chatSpace">-->
+<!--        </ul>-->
+<!--      </div>-->
+<!--      <div id="chatBox" class="ms-auto col-2 fixed-bottom">-->
+<!--        <form id="chatForm" autocomplete="off">-->
+<!--          <label for="textInput" class="form-label">Chat</label>-->
+<!--          <input id="textInput" type="text" class="form-control">-->
+<!--          <button type="submit" id="speechButton" class="btn btn-primary">Send</button>-->
+<!--        </form>-->
+<!--      </div>-->
+      <chat-box></chat-box>
     </div>
   </div>
 
@@ -46,6 +46,7 @@
 import {appendChat, speech, toggleTTS, nextTTS} from "@/liveTTSChat";
 import {Toast} from "bootstrap";
 import PdfView from "@/components/pdf/pdfView";
+import ChatBox from "@/components/liveSession/chatBox";
 
 const room = location.pathname;
 const receivedChats = [];
@@ -56,7 +57,7 @@ let recordState = false;
 
 export default {
   name: "live",
-  components: {PdfView},
+  components: {ChatBox, PdfView},
   sockets: {
     connect: function () {
       console.log("socket connected");
