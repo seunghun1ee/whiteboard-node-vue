@@ -249,10 +249,6 @@ io.on('connection', (socket) => {
         console.log(room, comment);
         socket.broadcast.to(room).emit("new_comment",comment);
     })
-    socket.on('chat_message', (chat) => {
-        console.log('room: ' + chat.room + ' user: ' + socket.id + ' message: ' + chat.msg);
-        socket.broadcast.to(chat.room).emit('chat_message', socket.id, chat.msg);
-    })
     socket.on("send_chat", (chat,room,channel) => {
         console.log(`room: ${room} channel: ${channel} user: ${socket.id} message: ${chat}`);
         socket.broadcast.to(room).emit("receive_chat",{chat:chat, channel:channel, id:socket.id});

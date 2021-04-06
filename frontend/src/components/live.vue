@@ -24,18 +24,7 @@
       </div>
     </div>
     <div class="col-2">
-      <p>Chat</p>
-<!--      <div>-->
-<!--        <ul id="chatSpace">-->
-<!--        </ul>-->
-<!--      </div>-->
-<!--      <div id="chatBox" class="ms-auto col-2 fixed-bottom">-->
-<!--        <form id="chatForm" autocomplete="off">-->
-<!--          <label for="textInput" class="form-label">Chat</label>-->
-<!--          <input id="textInput" type="text" class="form-control">-->
-<!--          <button type="submit" id="speechButton" class="btn btn-primary">Send</button>-->
-<!--        </form>-->
-<!--      </div>-->
+      <p class="mb-1">Chat</p>
       <chat-box></chat-box>
     </div>
   </div>
@@ -43,13 +32,12 @@
 </template>
 
 <script>
-import {appendChat, speech, toggleTTS, nextTTS} from "@/liveTTSChat";
+import {toggleTTS} from "@/liveTTSChat";
 import {Toast} from "bootstrap";
 import PdfView from "@/components/pdf/pdfView";
 import ChatBox from "@/components/liveSession/chatBox";
 
 const room = location.pathname;
-const receivedChats = [];
 let bootstrapAlert = null;
 let initialReminderTimer = null;
 let reminderTimer = null;
@@ -65,20 +53,6 @@ export default {
     room: function (room) {
       console.log("room emitted",room);
     },
-    chat_message: function (data) {
-      const chatSpace = document.getElementById("chatSpace");
-      console.log("chat_message",data);
-      const id = data[0];
-      const msg = data[1];
-      let userId = id.substr(0,4);
-      appendChat(chatSpace,userId,msg);
-      if(!window.speechSynthesis.paused) {
-        speech(msg);
-      }
-      receivedChats.push(msg);
-      window.scrollTo(0, document.body.scrollHeight);
-
-    },
     record_started: function () {
       this.startRecording();
     },
@@ -92,24 +66,6 @@ export default {
   },
   mounted() {
     const vue = this;
-    //Chat functions
-    const form = document.getElementById("chatForm");
-    const input = document.getElementById("textInput");
-    const chatSpace = document.getElementById("chatSpace");
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (input.value) {
-        // let myId = this.$socket.id.substr(0,4);
-        appendChat(chatSpace,"myId",input.value)
-        vue.$socket.emit('chat_message', {msg: input.value, room:room});
-        input.value = '';
-      }
-    });
-    // TTS functions
-    const nextTTSButton = document.getElementById("nextTTSButton");
-    nextTTSButton.addEventListener("click", () => {
-      nextTTS(receivedChats);
-    });
     // Recording reminder functions
     const recordRemindToast = document.getElementById("remindToast");
     bootstrapAlert = new Toast(recordRemindToast, {animation: true, autohide: false});
