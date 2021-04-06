@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import PdfDocument from "@/components/pdfDocument";
+import PdfDocument from "@/components/pdf/pdfDocument";
 export default {
   name: "pdfView",
   components: {PdfDocument},

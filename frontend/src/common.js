@@ -7,8 +7,8 @@ import unit from "@/components/unit";
 import index from '@/components/index.vue';
 import forum from '@/components/forum.vue';
 import live from '@/components/live.vue';
-import post from "@/components/post";
-import postView from "@/components/postView";
+import post from "@/components/post/post";
+import postView from "@/components/post/postView";
 
 
 Vue.config.productionTip = false

@@ -8,7 +8,7 @@
 
 <script>
 import lodashRange from "lodash/range";
-import PdfPage from "@/components/pdfPage";
+import PdfPage from "@/components/pdf/pdfPage";
 
 export default {
   name: "pdfDocument",

@@ -45,7 +45,7 @@
 <script>
 import {appendChat, speech, toggleTTS, nextTTS} from "@/liveTTSChat";
 import {Toast} from "bootstrap";
-import PdfView from "@/components/pdfView";
+import PdfView from "@/components/pdf/pdfView";
 
 const room = location.pathname;
 const receivedChats = [];

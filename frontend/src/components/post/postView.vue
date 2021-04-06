@@ -35,7 +35,7 @@
 import {getUnitById} from "@/unitRepository";
 import {getPostById} from "@/postRepository";
 import unit from "@/components/unit";
-import Comment from "@/components/comment";
+import Comment from "@/components/post/comment";
 
 export default {
   name: "postView",

@@ -110,12 +110,22 @@ app.get("/api/posts/unitId/:id", (req,res) => {
 
 app.post("/api/posts/newPost", (req,res) => {
     console.log(req.body);
-    const newPost = req.body;
-    newPost.id = posts.length;
-    newPost.uploader = 4;
-    newPost.isAnonymous = false;
-    posts.push(newPost);
-    res.send(newPost);
+    let newPost = new Post({
+        unitId: mongoose.Types.ObjectId(req.body.unitId), //convert string to ObjectId
+        title: req.body.title,
+        author: req.body.author,
+        tags: req.body.tags,
+        body: req.body.body,
+        anonymous: req.body.anonymous
+    });
+    console.log(newPost);
+    newPost.save().then(() => {
+        console.log("New post saved");
+        res.send(newPost);
+    }).catch(err => {
+        console.log("Post save error",err);
+        res.status(500).send(`Post Save error ${err}`);
+    });
 });
 
 app.get("/api/test", (req,res) => {
