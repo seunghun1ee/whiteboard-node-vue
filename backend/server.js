@@ -63,6 +63,8 @@ const posts = [
     { id: 5, unit: 1, title: "", message: "Welcome to Theory of Computer", uploader: 1, parent: null, children: [], isAnonymous: false, tags: []}
 ];
 
+const recordStates = {};
+
 app.get("/", (req,res) => {
     res.send("Hello world");
 });
@@ -239,6 +241,9 @@ io.on('connection', (socket) => {
     console.log("connection");
     socket.on('room', (room) => {
         socket.join(room);
+        if(recordStates[room]) {
+            socket.emit("record_state_true");
+        }
         console.log('user ' + socket.id + ' connected at room ' + room);
     })
     socket.on("save_new_post",(data) => {
@@ -259,10 +264,12 @@ io.on('connection', (socket) => {
     })
     socket.on("record_start", (room) => {
         console.log("record started at", room);
+        recordStates[room] = true;
         socket.broadcast.to(room).emit("record_started");
     })
     socket.on("record_stop", (room) => {
         console.log("record stopped at", room);
+        recordStates[room] = false;
         socket.broadcast.to(room).emit("record_stopped");
     })
     socket.on('disconnect', () => {

@@ -46,6 +46,9 @@ export default {
     room: function (room) {
       console.log("room emitted",room);
     },
+    record_state_true: function () {
+      this.isRecoding = true;
+    },
     record_started: function () {
       this.startRecording();
       this.recordCount++;
