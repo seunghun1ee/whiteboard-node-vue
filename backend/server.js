@@ -105,7 +105,7 @@ app.get("/api/posts/:id", (req,res) => {
 
 app.get("/api/posts/unitId/:id", (req,res) => {
     let unitId = req.params.id;
-    Post.find({unitId: unitId}).then(posts => {
+    Post.find({unitId: unitId}).sort({createdAt: -1}).then(posts => {
         res.send(posts.map(post => post.toJSON()));
     }).catch(err => res.send(`Internal server error, ${err}`));
 });

@@ -34,7 +34,7 @@ export default {
     },
     new_post: function (post) {
       console.log("new post incoming",post);
-      this.posts.push(post);
+      this.posts.unshift(post);
     }
   },
   created() {
@@ -56,7 +56,7 @@ export default {
   methods: {
     onNewPostSaved(newPost) {
       const vue = this;
-      this.posts.push(newPost);
+      this.posts.unshift(newPost);
       vue.$socket.emit("save_new_post",{post: newPost,room:room});
     }
   }
