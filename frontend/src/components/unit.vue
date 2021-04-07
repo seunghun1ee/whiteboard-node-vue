@@ -8,6 +8,7 @@
         <li v-for="staff in unit.staffs" :key="staff">{{staff}}</li>
       </ul>
     </div>
+
     <div>
       <h2>Unit forums</h2>
       <ul>
@@ -15,6 +16,14 @@
         <li><a href="#">Announcements</a></li>
       </ul>
     </div>
+
+    <div>
+      <h2>Assessments</h2>
+      <ul>
+        <li><a href="#">Lorem ipsum</a></li>
+      </ul>
+    </div>
+
     <div>
       <h2>Recorded lectures</h2>
       <article class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
@@ -26,6 +35,7 @@
         </article>
       </article>
     </div>
+
   </div>
 </template>
 

@@ -9,6 +9,7 @@ import forum from '@/components/forum.vue';
 import live from '@/components/live.vue';
 import post from "@/components/post/post";
 import postView from "@/components/post/postView";
+import assessment from "@/components/assessment";
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
@@ -58,6 +59,10 @@ const routes = [
             setSocketIO();
             next()
         }
+    },
+    {
+        path: "/assessments/",
+        component: assessment
     }
 ];
 
