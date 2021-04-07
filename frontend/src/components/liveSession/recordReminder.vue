@@ -1,6 +1,6 @@
 <template>
-  <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 5">
-    <div class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+  <div id="wrapper" class="position-fixed bottom-0 start-0 p-3" style="z-index: 5">
+    <div id="reminder" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-body">
         This is a friendly reminder to record your lecture :)
         <div class="mt-2 pt-2 border-top">
@@ -13,8 +13,36 @@
 </template>
 
 <script>
+import {Toast} from "bootstrap";
 export default {
-  name: "recordReminder"
+  name: "recordReminder",
+  props: {
+    firstTime: Number,
+    time: Number
+  },
+  data() {
+    return {
+      initialTimer: null,
+      timer: null,
+      bootstrapAlert: null
+    }
+  },
+  mounted() {
+    const reminder = document.getElementById("reminder");
+    this.bootstrapAlert = new Toast(reminder, {animation: true, autohide: false});
+    this.initialTimer = window.setTimeout(this.initialReminder, this.firstTime);
+  },
+  methods: {
+    initialReminder() {
+      console.log("first reminder");
+      this.bootstrapAlert.show();
+      this.timer = window.setInterval(this.reminder, this.time);
+    },
+    reminder() {
+      console.log("reminder");
+      this.bootstrapAlert.show();
+    }
+  }
 }
 </script>
 
