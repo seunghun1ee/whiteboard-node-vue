@@ -21,3 +21,7 @@ export function savePost(post) {
 export function saveComment(postId, comment) {
     return axios.patch(BASE_URL + `/api/posts/${postId}/newComment`,comment).then(res => res.data);
 }
+// This is part of post repository for now
+export function getTags() {
+    return axios.get(`${BASE_URL}/api/tags`).then(res => res.data);
+}

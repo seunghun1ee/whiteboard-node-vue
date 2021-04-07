@@ -4,7 +4,7 @@
       <h6 v-if="postData.title"><a v-bind:href="'posts/' + postData._id">{{postData.title}}</a></h6>
       <h6 v-else><a v-bind:href="'posts/' + postData._id">No title</a></h6>
       <div v-if="postData.tags.length > 0">
-        <small v-for="tag in postData.tags" :key="tag">{{tag}} | </small>
+        <small v-for="tag in postData.tags" :key="tag.id" v-bind:style="'color:' + tag.colour">{{tag.name}} | </small>
       </div>
       <small v-else class="mb-0">No tags</small>
       <p>

@@ -5,7 +5,7 @@
     <div v-if="post">
       <h2>{{post.title}}</h2>
       <div v-if="post.tags.length > 0">
-        <p v-for="tag in post.tags" :key="tag">{{tag}} | </p>
+        <span v-for="tag in post.tags" :key="tag.id" v-bind:style="'color:' + tag.colour">{{tag.name}} | </span>
       </div>
       <p v-else class="mb-0">No tags</p>
 

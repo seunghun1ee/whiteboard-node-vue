@@ -63,6 +63,33 @@ const posts = [
     { id: 5, unit: 1, title: "", message: "Welcome to Theory of Computer", uploader: 1, parent: null, children: [], isAnonymous: false, tags: []}
 ];
 
+const tags= [
+    {
+        id: 0,
+        name: "Answered",
+        description: "",
+        colour: "#00ff00"
+    },
+    {
+        id: 1,
+        name: "Question",
+        description: "",
+        colour: "#ff8400"
+    },
+    {
+        id: 2,
+        name: "Error found",
+        description: "",
+        colour: "#ff0000"
+    },
+    {
+        id: 3,
+        name: "Technical help",
+        description: "",
+        colour: "#1a51ff"
+    }
+]
+
 const recordStates = {};
 
 app.get("/", (req,res) => {
@@ -111,11 +138,15 @@ app.get("/api/posts/unitId/:id", (req,res) => {
 });
 
 app.post("/api/posts/newPost", (req,res) => {
+    let selectedTags = [];
+    req.body.tags.forEach(id => {
+        selectedTags.push(tags[id]);
+    });
     let newPost = new Post({
         unitId: mongoose.Types.ObjectId(req.body.unitId), //convert string to ObjectId
         title: req.body.title,
         author: req.body.author,
-        tags: req.body.tags,
+        tags: selectedTags,
         body: req.body.body,
         anonymous: req.body.anonymous
     });
@@ -139,8 +170,12 @@ app.patch("/api/posts/:postId/newComment", (req,res) => {
     Post.updateOne({_id: req.params.postId},{$push: {comments: newComment}}).then(() => {
         console.log("new comment saved");
         res.send(newComment);
-    })
-})
+    });
+});
+
+app.get("/api/tags", (req,res) => {
+   res.send(tags);
+});
 
 app.get("/api/test", (req,res) => {
     Post.deleteMany({}).catch(err => console.log(err));
@@ -182,7 +217,7 @@ app.get("/api/test", (req,res) => {
         unitId: coms10000._id,
         title: "Need help on x",
         author: "Alice Wonderland",
-        tags: [],
+        tags: [tags[1],tags[0]],
         body: "Hi, why does x behave like y?",
         anonymous: false,
         comments: [
