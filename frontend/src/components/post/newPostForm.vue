@@ -11,6 +11,10 @@
         <form id="newPost" @submit="submitForm">
           <label class="form-label" for="newPostTitleInput">Title</label>
           <input id="newPostTitleInput" class="form-control" type="text" v-model="title" name="title" required>
+          <label class="form-label" for="newPostTagSelect">Tags</label>
+          <select id="newPostTagSelect" class="form-select form-select-sm" multiple v-model="tags" name="tags">
+            <option v-for="selectTag in selectTags" :key="selectTag.id" v-bind:value="selectTag.id">{{selectTag.name}}</option>
+          </select>
           <label class="form-label" for="newPostTextarea">Post message</label>
           <textarea class="form-control" id="newPostTextarea" rows="3" v-model="body" name="body" required></textarea>
           <div class="form-check form-switch">
@@ -25,7 +29,7 @@
 </template>
 
 <script>
-import {savePost} from "@/postRepository";
+import {savePost, getTags} from "@/postRepository";
 
 export default {
   name: "newPostForm",
@@ -35,8 +39,14 @@ export default {
       tags: [],
       body: null,
       anonymous: false,
-      errors: []
+      errors: [],
+      selectTags: []
     }
+  },
+  created() {
+    getTags()
+        .then(data => this.selectTags = data)
+        .catch(err => alert(err));
   },
   methods: {
     checkForm() {
