@@ -12,7 +12,11 @@ import PdfPage from "@/components/pdf/pdfPage";
 
 export default {
   name: "pdfDocument",
-  props: ["url","data","scale"],
+  props: {
+    url: String,
+    data: Uint8Array,
+    scale: Number
+  },
   components: {PdfPage},
   data() {
     return {
@@ -33,6 +37,7 @@ export default {
             return pdfjs.getDocument(this.url).promise;
           }
           else if(this.data) {
+            console.log(typeof(this.data));
             return pdfjs.getDocument({data:this.data}).promise;
           }
           return null;

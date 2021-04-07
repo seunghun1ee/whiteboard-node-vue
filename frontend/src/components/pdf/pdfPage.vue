@@ -1,7 +1,10 @@
 <script>
 export default {
   name: "pdfPage",
-  props:["page", "scale"],
+  props: {
+    page: Object,
+    scale: Number
+  },
   render(createElement) {
     const {canvasAttrs: attrs} = this;
     return createElement("canvas",{attrs});
