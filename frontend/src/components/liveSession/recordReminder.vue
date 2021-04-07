@@ -4,7 +4,7 @@
       <div class="toast-body">
         This is a friendly reminder to record your lecture :)
         <div class="mt-2 pt-2 border-top">
-          <button id="toastRecordButton" type="button" class="btn btn-danger btn-sm">Record</button>
+          <button v-on:click="recordButton" id="toastRecordButton" type="button" class="btn btn-danger btn-sm">Record</button>
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
         </div>
       </div>
@@ -32,6 +32,10 @@ export default {
     this.bootstrapAlert = new Toast(reminder, {animation: true, autohide: false});
     this.initialTimer = window.setTimeout(this.initialReminder, this.firstTime);
   },
+  beforeDestroy() {
+    clearTimeout(this.initialTimer);
+    clearInterval(this.timer);
+  },
   methods: {
     initialReminder() {
       console.log("first reminder");
@@ -41,6 +45,12 @@ export default {
     reminder() {
       console.log("reminder");
       this.bootstrapAlert.show();
+    },
+    recordButton() {
+      clearTimeout(this.initialTimer);
+      clearInterval(this.timer);
+      this.bootstrapAlert.dispose();
+      this.$emit("toastRecordClicked");
     }
   }
 }

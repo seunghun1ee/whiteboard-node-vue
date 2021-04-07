@@ -7,22 +7,12 @@
       <button id="cameraButton" class="btn btn-primary">Camera</button>
       <button id="micButton" class="btn btn-primary">Microphone</button>
       <button id="audioButton" class="btn btn-primary">Audio</button>
-      <button id="recordButton" class="btn btn-danger">Record</button>
+      <button v-on:click="onRecordClicked" id="recordButton" class="btn btn-danger">Record</button>
       <button id="screenButton" class="btn btn-primary">Share screen</button>
       <pdf-view></pdf-view>
 
-      <record-reminder v-bind="{firstTime:5000,time:10000}"></record-reminder>
-<!--      <div id="reminder" class="position-fixed bottom-0 start-0 p-3" style="z-index: 5">-->
-<!--        <div id="remindToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">-->
-<!--          <div class="toast-body">-->
-<!--            This is a friendly reminder to record your lecture :)-->
-<!--            <div class="mt-2 pt-2 border-top">-->
-<!--              <button id="toastRecordButton" type="button" class="btn btn-danger btn-sm">Record</button>-->
-<!--              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:5000,time:10000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>
+
     </div>
     <div class="col-2">
       <p class="mb-1">Chat</p>
@@ -34,23 +24,19 @@
 
 <script>
 import {toggleTTS} from "@/liveTTSChat";
-// import {Toast} from "bootstrap";
 import PdfView from "@/components/pdf/pdfView";
 import ChatBox from "@/components/liveSession/chatBox";
 import RecordReminder from "@/components/liveSession/recordReminder";
 
 const room = location.pathname;
-// let bootstrapAlert = null;
-// let initialReminderTimer = null;
-// let reminderTimer = null;
-// let recordState = false;
 
 export default {
   name: "live",
   components: {RecordReminder, ChatBox, PdfView},
   data() {
     return {
-      isRecoding: false
+      isRecoding: false,
+      recordCount: 0
     }
   },
   sockets: {
@@ -62,9 +48,11 @@ export default {
     },
     record_started: function () {
       this.startRecording();
+      this.recordCount++;
     },
     record_stopped: function () {
       this.stopRecording();
+      this.recordCount++;
     }
   },
   created() {
@@ -75,39 +63,27 @@ export default {
 
   },
   methods: {
-    toggleTTS
-    // initialReminder: function () {
-    //   console.log("first reminder");
-    //   bootstrapAlert.show();
-    //   reminderTimer = window.setInterval(this.reminder, 10000); // change time later
-    // },
-    // reminder: function() {
-    //   bootstrapAlert.show();
-    //   console.log("reminder");
-    // },
-    // recordButtonControl: function () {
-    //   if(recordState) {
-    //     this.$socket.emit("record_stop",room);
-    //     this.stopRecording();
-    //   }
-    //   else {
-    //     this.$socket.emit("record_start",room);
-    //     this.startRecording();
-    //   }
-    // },
-    // startRecording: function () {
-    //   console.log("recording starts");
-    //   recordState = true;
-    //   window.clearTimeout(initialReminderTimer);
-    //   window.clearInterval(reminderTimer);
-    //   bootstrapAlert.dispose();
-    //   const reminder = document.getElementById("reminder");
-    //   reminder.remove();
-    // },
-    // stopRecording: function () {
-    //   console.log("recording stopped");
-    //   recordState = false;
-    // }
+    toggleTTS,
+    onRecordClicked() {
+      console.log("record button clicked");
+      if(!this.isRecoding) {
+        this.startRecording();
+        this.$socket.emit("record_start",room);
+      }
+      else {
+        this.stopRecording();
+        this.$socket.emit("record_stop",room);
+      }
+      this.recordCount++;
+    },
+    startRecording() {
+      this.isRecoding = true;
+      console.log("recording starts");
+    },
+    stopRecording() {
+      this.isRecoding = false;
+      console.log("recording stops");
+    }
   }
 }
 </script>
