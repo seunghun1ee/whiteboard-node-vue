@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Channel name</p>
+    <p>{{channelData.name}}</p>
     <ul id="chatSpace">
       <li v-for="chat in chats" :key="chat + Math.floor(Math.random()*1000)">
         <chat v-bind:message="chat"></chat>
@@ -14,9 +14,13 @@
 <script>
 import Chat from "@/components/liveSession/chat";
 import ChatInput from "@/components/liveSession/chatInput";
+const room = location.pathname;
 export default {
   name: "chatChannel",
   components: {ChatInput, Chat},
+  props: {
+    channelData : Object
+  },
   data() {
     return {
       chats: []
@@ -24,12 +28,16 @@ export default {
   },
   sockets: {
     receive_chat: function (data) {
-      const shortId = data.id.substr(0,4);
-      this.chats.push(`${shortId}: ${data.chat}`);
+      if(data.channel === this.channelData.id) {
+        const shortId = data.id.substr(0,4);
+        this.chats.push(`${shortId}: ${data.chat}`);
+      }
     }
   },
   methods: {
     onChatSent(chatMessage) {
+      const vue = this
+      vue.$socket.emit("send_chat",chatMessage,room,this.channelData.id);
       this.chats.push(`myId: ${chatMessage}`);
     }
   }
