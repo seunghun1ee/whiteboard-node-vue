@@ -289,9 +289,9 @@ io.on('connection', (socket) => {
         console.log(room, comment);
         socket.broadcast.to(room).emit("new_comment",comment);
     })
-    socket.on("send_chat", (chat,room,channel) => {
-        console.log(`room: ${room} channel: ${channel} user: ${socket.id} message: ${chat}`);
-        socket.broadcast.to(room).emit("receive_chat",{chat:chat, channel:channel, id:socket.id});
+    socket.on("send_chat", (chat,anonymous,room,channel) => {
+        console.log(`room: ${room} channel: ${channel} user: ${socket.id} message: ${chat} anonymous: ${anonymous}`);
+        socket.broadcast.to(room).emit("receive_chat",{chat:chat, anonymous: anonymous, channel:channel, id:socket.id});
     })
     socket.on("share-pdf",(room,data) => {
         console.log(data);

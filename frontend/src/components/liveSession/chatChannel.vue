@@ -29,15 +29,20 @@ export default {
   sockets: {
     receive_chat: function (data) {
       if(data.channel === this.channelData.id) {
-        const shortId = data.id.substr(0,4);
-        this.chats.push(`${shortId}: ${data.chat}`);
+        if(data.anonymous) {
+          this.chats.push(`Anonymous: ${data.chat}`);
+        }
+        else {
+          const shortId = data.id.substr(0,4);
+          this.chats.push(`${shortId}: ${data.chat}`);
+        }
       }
     }
   },
   methods: {
-    onChatSent(chatMessage) {
+    onChatSent(chatMessage,anonymous) {
       const vue = this
-      vue.$socket.emit("send_chat",chatMessage,room,this.channelData.id);
+      vue.$socket.emit("send_chat",chatMessage,anonymous,room,this.channelData.id);
       this.chats.push(`myId: ${chatMessage}`);
     }
   }
