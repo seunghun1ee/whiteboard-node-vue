@@ -16,7 +16,6 @@
 
     </div>
     <div class="col-2">
-      <p class="mb-1">Chat</p>
       <chat-box></chat-box>
     </div>
   </div>

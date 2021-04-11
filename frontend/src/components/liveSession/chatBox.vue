@@ -1,11 +1,18 @@
 <template>
   <div>
-    <ul class="nav nav-tabs">
-      <li v-for="channel in channels" :key="channel.id" class="nav-item">
-        <a href="#" v-if="channelIndex === channel.id" v-on:click="channelIndex = channel.id" class="nav-link active" aria-current="page">{{channel.name}}</a>
-        <a href="#" v-else v-on:click="channelIndex = channel.id" class="nav-link">{{channel.name}}</a>
-      </li>
-    </ul>
+    <div id="chatMenu" ref="chatMenu">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="channelMenu" data-bs-toggle="dropdown" aria-expanded="false">
+          Channels
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="channelMenu">
+          <li v-for="channel in channels" :key="channel.id">
+            <button v-if="channelIndex === channel.id" v-on:click="channelIndex = channel.id" class="dropdown-item active" type="button">{{channel.name}}</button>
+            <button v-else v-on:click="channelIndex = channel.id" class="dropdown-item" type="button">{{channel.name}}</button>
+          </li>
+        </ul>
+      </div>
+    </div>
     <chat-channel v-bind:hidden="channelIndex !== channel.id" v-for="channel in channels" :key="channel.id" v-bind:channel-data="channel"></chat-channel>
   </div>
 </template>
@@ -18,7 +25,7 @@ export default {
   data() {
     return {
       channelIndex: 0,
-      channels: [{id: 0, name: "default"}, {id: 1, name: "secondary"}]
+      channels: [{id: 0, name: "default"}, {id: 1, name: "secondary"}, {id: 2, name: "private"}]
     }
   }
 }
