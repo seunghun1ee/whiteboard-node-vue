@@ -1,15 +1,15 @@
 <template>
-  <div class="ms-auto col-2 fixed-bottom">
+  <div style="display: block;" ref="chatInputForm">
     <form autocomplete="off" @submit="submitForm">
-      <label for="textInput" class="form-label">Chat</label>
-      <input id="textInput" type="text" class="form-control" v-model="chatMessage" name="chatMessage" v-on:input="validateChat">
+      <input type="text" placeholder="Message" class="form-control" v-model="chatMessage" name="chatMessage" v-on:input="validateChat">
       <div class="form-check form-switch">
-        <input id="newPostAnonymousInput" class="form-check-input" type="checkbox" v-model="anonymous" name="anonymous">
-        <label class="form-check-label" for="newPostAnonymousInput">Anonymous chat</label>
+        <input class="form-check-input" type="checkbox" v-model="anonymous" name="anonymous">
+        <label class="form-check-label">Anonymous chat</label>
       </div>
-      <button type="submit" id="speechButton" class="btn btn-primary" v-bind:disabled="isChatEmpty">Send</button>
+      <button type="submit" class="btn btn-primary" v-bind:disabled="isChatEmpty">Send</button>
     </form>
   </div>
+
 </template>
 
 <script>
