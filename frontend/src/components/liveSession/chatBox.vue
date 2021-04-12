@@ -10,6 +10,10 @@
             <button v-if="channelIndex === channel.id" v-on:click="channelIndex = channel.id" class="dropdown-item active" type="button">{{channel.name}}</button>
             <button v-else v-on:click="channelIndex = channel.id" class="dropdown-item" type="button">{{channel.name}}</button>
           </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <button class="dropdown-item">Add new channel</button>
+          </li>
         </ul>
       </div>
     </div>
