@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const port = 3000;
+const path = require("path");
 const io = require("socket.io")(http, {
     cors: {
         origin: "*",
@@ -13,6 +14,17 @@ const io = require("socket.io")(http, {
 });
 const bodyParser = require("body-parser");
 const cors = require("cors");
+
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname,"pdfs"));
+    },
+    filename: function (req, file, cb) {
+        cb(null, "presenting.pdf");
+    }
+});
+
 //DB
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -188,6 +200,18 @@ app.patch("/api/posts/:postId/newComment", (req,res) => {
 app.get("/api/tags", (req,res) => {
    res.send(tags);
 });
+
+app.post("/api/uploadPdf", (req,res) => {
+    multer({storage: storage}).single("pdf")(req,res,function (err) {
+        if (err instanceof multer.MulterError) {
+            // A Multer error occurred when uploading.
+            console.log(err);
+            res.status(500).error();
+        }
+    });
+    io.emit("presenting_pdf");
+    res.send("pdf upload success");
+})
 
 app.get("/api/test", (req,res) => {
     Post.deleteMany({}).catch(err => console.log(err));

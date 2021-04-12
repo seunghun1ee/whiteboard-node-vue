@@ -56,6 +56,9 @@ export default {
     record_stopped: function () {
       this.stopRecording();
       this.recordCount++;
+    },
+    presenting_pdf: function () {
+      console.log("presenting pdf");
     }
   },
   created() {
