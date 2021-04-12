@@ -202,7 +202,7 @@ app.get("/api/tags", (req,res) => {
 });
 
 app.post("/api/uploadPdf", (req,res) => {
-    multer({storage: storage}).single("pdf")(req,res,function (err) {
+    multer({storage: storage, fileFilter: pdfFilter}).single("pdf")(req,res,function (err) {
         if (err instanceof multer.MulterError) {
             // A Multer error occurred when uploading.
             console.log(err);
@@ -212,6 +212,16 @@ app.post("/api/uploadPdf", (req,res) => {
     io.emit("presenting_pdf");
     res.send("pdf upload success");
 })
+
+const pdfFilter = (req,file,cb) => {
+    const allowedTypes = ["application/pdf"];
+    if(!allowedTypes.includes(file.mimetype)) {
+        const error = new Error("Incorrect file type");
+        error.code = "INCORRECT_FILETYPE";
+        return cb(error,false);
+    }
+    return cb(null,true);
+}
 
 app.get("/api/test", (req,res) => {
     Post.deleteMany({}).catch(err => console.log(err));
