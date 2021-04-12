@@ -21,6 +21,10 @@
     </div>
 
     <div>
+      <p>Customisable area</p>
+    </div>
+
+    <div>
       <h2>Recorded lectures</h2>
       <article class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
         <article v-for="video in videos" v-bind:key="video.id" class="col">

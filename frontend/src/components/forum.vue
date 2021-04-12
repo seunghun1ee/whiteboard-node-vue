@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{unit.code}} {{unit.title}} Forum</h1>
+    <h1><a v-bind:href="'/units/' + unit._id">{{unit.code}} {{unit.title}}</a> Forum</h1>
     <hr>
     <new-post-form @newPostSaved="onNewPostSaved"></new-post-form>
     <post-list v-bind:posts="posts"></post-list>
