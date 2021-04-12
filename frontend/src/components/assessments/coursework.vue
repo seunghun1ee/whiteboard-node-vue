@@ -12,8 +12,10 @@
     <h2>Submission point</h2>
     <hr>
     <form>
-      <input placeholder="form">
-      <button>button</button>
+      <label class="form-label">Attach files</label>
+      <input class="form-control" placeholder="Attach files" type="file" multiple required>
+      <textarea class="form-control" placeholder="Description"></textarea>
+      <button class="btn btn-primary" type="submit">Submit coursework</button>
     </form>
   </div>
 </template>
