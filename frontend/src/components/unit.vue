@@ -8,19 +8,15 @@
         <li v-for="staff in unit.staffs" :key="staff">{{staff}}</li>
       </ul>
     </div>
-
+    <br>
     <div>
-      <h2>Unit forums</h2>
-      <ul>
-        <li><a v-bind:href="unit._id + '/forum/'">Discussion forum</a></li>
-        <li><a href="#">Announcements</a></li>
-      </ul>
+      <h2><a v-bind:href="unit._id + '/forum/'">Unit forum</a></h2>
     </div>
 
     <div>
       <h2>Assessments</h2>
       <ul>
-        <li><a href="#">Lorem ipsum</a></li>
+        <li><a href="/coursework/1/">Lorem ipsum</a></li>
       </ul>
     </div>
 

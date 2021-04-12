@@ -87,6 +87,18 @@ const tags= [
         name: "Technical help",
         description: "",
         colour: "#1a51ff"
+    },
+    {
+        id: 4,
+        name: "Announcement",
+        description: "",
+        colour: "#0f9210"
+    },
+    {
+        id: 5,
+        name: "Assessment",
+        description: "",
+        colour: "#ba0eef"
     }
 ]
 
