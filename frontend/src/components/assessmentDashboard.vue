@@ -21,14 +21,16 @@
     <h2>Coursework</h2>
     <hr>
     <ul>
-      <li><a href="#">Lorem ipsum dolor - COMS10001 Mathematics for CS</a> - 5 days 12 hours left</li>
+      <li>
+        <a href="/coursework/1/">Lorem ipsum dolor - COMS10001 Mathematics for CS</a> - 10 days 12 hours left
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
 export default {
-  name: "assessment"
+  name: "assessmentDashboard"
 }
 </script>
 

@@ -9,7 +9,8 @@ import forum from '@/components/forum.vue';
 import live from '@/components/live.vue';
 import post from "@/components/post/post";
 import postView from "@/components/post/postView";
-import assessment from "@/components/assessment";
+import assessmentDashboard from "@/components/assessmentDashboard";
+import coursework from "@/components/assessments/coursework";
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
@@ -62,7 +63,11 @@ const routes = [
     },
     {
         path: "/assessments/",
-        component: assessment
+        component: assessmentDashboard
+    },
+    {
+        path: "/coursework/:id",
+        component: coursework
     }
 ];
 
