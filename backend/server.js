@@ -363,6 +363,9 @@ io.on('connection', (socket) => {
         recordStates[room] = false;
         socket.broadcast.to(room).emit("record_stopped");
     })
+    socket.on("pdf_page_change", (pageNum) => {
+        socket.broadcast.emit("pdf_page_changed",pageNum);
+    })
     socket.on("stop_presenting_pdf", () => {
         pdfPresenting = null;
         io.emit("presentation_stopped");

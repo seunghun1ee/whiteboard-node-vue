@@ -25,6 +25,11 @@ export default {
       currentPage: 0
     }
   },
+  sockets:{
+    pdf_page_changed: function (pageNum) {
+      this.currentPage = pageNum;
+    }
+  },
   created() {
     this.fetchPDF();
   },
@@ -49,11 +54,13 @@ export default {
     nextPage() {
       if(this.currentPage < this.pages.length - 1) {
         this.currentPage++;
+        this.$socket.emit("pdf_page_change",this.currentPage);
       }
     },
     prevPage() {
       if(this.currentPage > 0) {
         this.currentPage--;
+        this.$socket.emit("pdf_page_change",this.currentPage);
       }
     }
   },
