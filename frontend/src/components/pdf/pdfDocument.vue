@@ -14,7 +14,7 @@ export default {
   name: "pdfDocument",
   props: {
     url: String,
-    data: Uint8Array,
+    data: [Uint8Array,String],
     scale: Number
   },
   components: {PdfPage},

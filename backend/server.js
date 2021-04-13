@@ -18,12 +18,13 @@ const cors = require("cors");
 const multer = require("multer");
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname,"pdfs"));
+        cb(null, path.join(__dirname,"presentation/pdfs"));
     },
     filename: function (req, file, cb) {
         cb(null, "presenting.pdf");
     }
 });
+const pdf2base64 = require("pdf-to-base64");
 
 //DB
 const mongoose = require("mongoose");
@@ -209,7 +210,11 @@ app.post("/api/uploadPdf", (req,res) => {
             res.status(500).error();
         }
     });
-    io.emit("presenting_pdf");
+    pdf2base64(path.join(__dirname,"presentation/pdfs/presenting.pdf")).then(base64 => {
+        io.emit("presenting_pdf",base64);
+    }).catch(err => {
+        res.send(err);
+    })
     res.send("pdf upload success");
 })
 
