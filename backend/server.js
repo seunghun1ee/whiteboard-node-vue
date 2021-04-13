@@ -116,6 +116,7 @@ const tags= [
 ]
 
 const recordStates = {};
+let pdfPresenting = null;
 
 app.get("/", (req,res) => {
     res.send("Hello world");
@@ -209,14 +210,15 @@ app.post("/api/uploadPdf", (req,res) => {
             console.log(err);
             res.status(500).error();
         }
+        pdf2base64(path.join(__dirname,"presentation/pdfs/presenting.pdf")).then(base64 => {
+            pdfPresenting = base64;
+            io.emit("presenting_pdf",base64);
+        }).catch(err => {
+            res.send(err);
+        })
+        res.send("pdf upload success");
     });
-    pdf2base64(path.join(__dirname,"presentation/pdfs/presenting.pdf")).then(base64 => {
-        io.emit("presenting_pdf",base64);
-    }).catch(err => {
-        res.send(err);
-    })
-    res.send("pdf upload success");
-})
+});
 
 const pdfFilter = (req,file,cb) => {
     const allowedTypes = ["application/pdf"];
@@ -330,6 +332,9 @@ io.on('connection', (socket) => {
         if(recordStates[room]) {
             socket.emit("record_state_true");
         }
+        if(pdfPresenting) {
+            socket.emit("presenting_pdf",pdfPresenting);
+        }
         console.log('user ' + socket.id + ' connected at room ' + room);
     })
     socket.on("save_new_post",(data) => {
@@ -357,6 +362,10 @@ io.on('connection', (socket) => {
         console.log("record stopped at", room);
         recordStates[room] = false;
         socket.broadcast.to(room).emit("record_stopped");
+    })
+    socket.on("stop_presenting_pdf", () => {
+        pdfPresenting = null;
+        io.emit("presentation_stopped");
     })
     socket.on('disconnect', () => {
         socket.leave();
