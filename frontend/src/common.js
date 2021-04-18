@@ -14,7 +14,7 @@ import coursework from "@/components/assessments/coursework";
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
-const socketTarget = "http://localhost:3000"
+const socketTarget = "http://192.168.35.90:3000"
 function setSocketIO() {
     if (!Vue.prototype.$socket) {
         Vue.use(new VueSocketIO({

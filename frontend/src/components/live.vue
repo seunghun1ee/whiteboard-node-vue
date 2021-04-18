@@ -13,8 +13,8 @@
       <pdf-uploader></pdf-uploader>
       <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">Stop presentation</button>
       <pdf-document v-if="b64PdfData" v-bind:data="b64PdfData" v-bind:scale="1" :key="b64PdfData"></pdf-document>
-      <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:5000,time:10000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>
-
+<!--      <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:5000,time:10000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>-->
+      <jitsi></jitsi>
     </div>
     <div class="col-2">
       <chat-box></chat-box>
@@ -29,12 +29,14 @@ import ChatBox from "@/components/liveSession/chatBox";
 import RecordReminder from "@/components/liveSession/recordReminder";
 import PdfUploader from "@/components/pdf/pdfUploader";
 import PdfDocument from "@/components/pdf/pdfDocument";
+import Jitsi from "./liveSession/jitsi";
 
 const room = location.pathname;
 
 export default {
   name: "live",
-  components: {PdfDocument, PdfUploader, RecordReminder, ChatBox},
+  // eslint-disable-next-line vue/no-unused-components
+  components: {Jitsi, PdfDocument, PdfUploader, RecordReminder, ChatBox},
   data() {
     return {
       isRecoding: false,
