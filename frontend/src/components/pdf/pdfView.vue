@@ -8,6 +8,7 @@
 
 <script>
 import PdfDocument from "@/components/pdf/pdfDocument";
+
 export default {
   name: "pdfView",
   components: {PdfDocument},

@@ -14,7 +14,7 @@ export default {
   name: "pdfDocument",
   props: {
     url: String,
-    data: Uint8Array,
+    data: [Uint8Array,String],
     scale: Number
   },
   components: {PdfPage},
@@ -23,6 +23,11 @@ export default {
       pdf: undefined,
       pages: [],
       currentPage: 0
+    }
+  },
+  sockets:{
+    pdf_page_changed: function (pageNum) {
+      this.currentPage = pageNum;
     }
   },
   created() {
@@ -49,11 +54,13 @@ export default {
     nextPage() {
       if(this.currentPage < this.pages.length - 1) {
         this.currentPage++;
+        this.$socket.emit("pdf_page_change",this.currentPage);
       }
     },
     prevPage() {
       if(this.currentPage > 0) {
         this.currentPage--;
+        this.$socket.emit("pdf_page_change",this.currentPage);
       }
     }
   },

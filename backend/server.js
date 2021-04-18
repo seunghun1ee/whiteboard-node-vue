@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const port = 3000;
+const path = require("path");
 const io = require("socket.io")(http, {
     cors: {
         origin: "*",
@@ -13,6 +14,18 @@ const io = require("socket.io")(http, {
 });
 const bodyParser = require("body-parser");
 const cors = require("cors");
+
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname,"presentation/pdfs"));
+    },
+    filename: function (req, file, cb) {
+        cb(null, "presenting.pdf");
+    }
+});
+const pdf2base64 = require("pdf-to-base64");
+
 //DB
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -103,6 +116,7 @@ const tags= [
 ]
 
 const recordStates = {};
+let pdfPresenting = null;
 
 app.get("/", (req,res) => {
     res.send("Hello world");
@@ -188,6 +202,33 @@ app.patch("/api/posts/:postId/newComment", (req,res) => {
 app.get("/api/tags", (req,res) => {
    res.send(tags);
 });
+
+app.post("/api/uploadPdf", (req,res) => {
+    multer({storage: storage, fileFilter: pdfFilter}).single("pdf")(req,res,function (err) {
+        if (err instanceof multer.MulterError) {
+            // A Multer error occurred when uploading.
+            console.log(err);
+            res.status(500).error();
+        }
+        pdf2base64(path.join(__dirname,"presentation/pdfs/presenting.pdf")).then(base64 => {
+            pdfPresenting = base64;
+            io.emit("presenting_pdf",base64);
+        }).catch(err => {
+            res.send(err);
+        })
+        res.send("pdf upload success");
+    });
+});
+
+const pdfFilter = (req,file,cb) => {
+    const allowedTypes = ["application/pdf"];
+    if(!allowedTypes.includes(file.mimetype)) {
+        const error = new Error("Incorrect file type");
+        error.code = "INCORRECT_FILETYPE";
+        return cb(error,false);
+    }
+    return cb(null,true);
+}
 
 app.get("/api/test", (req,res) => {
     Post.deleteMany({}).catch(err => console.log(err));
@@ -291,6 +332,9 @@ io.on('connection', (socket) => {
         if(recordStates[room]) {
             socket.emit("record_state_true");
         }
+        if(pdfPresenting) {
+            socket.emit("presenting_pdf",pdfPresenting);
+        }
         console.log('user ' + socket.id + ' connected at room ' + room);
     })
     socket.on("save_new_post",(data) => {
@@ -318,6 +362,13 @@ io.on('connection', (socket) => {
         console.log("record stopped at", room);
         recordStates[room] = false;
         socket.broadcast.to(room).emit("record_stopped");
+    })
+    socket.on("pdf_page_change", (pageNum) => {
+        socket.broadcast.emit("pdf_page_changed",pageNum);
+    })
+    socket.on("stop_presenting_pdf", () => {
+        pdfPresenting = null;
+        io.emit("presentation_stopped");
     })
     socket.on('disconnect', () => {
         socket.leave();

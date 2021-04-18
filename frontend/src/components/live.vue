@@ -10,8 +10,9 @@
       <button id="audioButton" class="btn btn-primary">Audio</button>
       <button v-on:click="onRecordClicked" id="recordButton" class="btn btn-danger">Record</button>
       <button id="screenButton" class="btn btn-primary">Share screen</button>
-      <pdf-view></pdf-view>
-
+      <pdf-uploader></pdf-uploader>
+      <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">Stop presentation</button>
+      <pdf-document v-if="b64PdfData" v-bind:data="b64PdfData" v-bind:scale="1" :key="b64PdfData"></pdf-document>
       <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:5000,time:10000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>
 
     </div>
@@ -24,19 +25,22 @@
 
 <script>
 import {toggleTTS} from "@/liveTTSChat";
-import PdfView from "@/components/pdf/pdfView";
 import ChatBox from "@/components/liveSession/chatBox";
 import RecordReminder from "@/components/liveSession/recordReminder";
+import PdfUploader from "@/components/pdf/pdfUploader";
+import PdfDocument from "@/components/pdf/pdfDocument";
 
 const room = location.pathname;
 
 export default {
   name: "live",
-  components: {RecordReminder, ChatBox, PdfView},
+  components: {PdfDocument, PdfUploader, RecordReminder, ChatBox},
   data() {
     return {
       isRecoding: false,
-      recordCount: 0
+      recordCount: 0,
+      isPdfReady: false,
+      b64PdfData: null
     }
   },
   sockets: {
@@ -56,6 +60,14 @@ export default {
     record_stopped: function () {
       this.stopRecording();
       this.recordCount++;
+    },
+    presenting_pdf: function (data) {
+      this.isPdfReady = true;
+      this.b64PdfData = atob(data);
+    },
+    presentation_stopped: function () {
+      this.isPdfReady = false;
+      this.b64PdfData = null;
     }
   },
   created() {
@@ -86,6 +98,11 @@ export default {
     stopRecording() {
       this.isRecoding = false;
       console.log("recording stops");
+    },
+    onStopPresentation() {
+      this.isPdfReady = false;
+      console.log("presentation stops");
+      this.$socket.emit("stop_presenting_pdf");
     }
   }
 }
