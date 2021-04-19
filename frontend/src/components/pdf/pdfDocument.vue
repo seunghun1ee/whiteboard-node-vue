@@ -1,8 +1,9 @@
 <template>
   <div>
+    <pdf-page v-if="pages[currentPage]" v-bind="{page:pages[currentPage],scale:scale}" :key="currentPage"></pdf-page>
+    <br>
     <button v-on:click="prevPage" class="btn btn-primary">prev</button>
     <button v-on:click="nextPage" class="btn btn-primary">next</button>
-    <pdf-page v-if="pages[currentPage]" v-bind="{page:pages[currentPage],scale:scale}" :key="currentPage"></pdf-page>
   </div>
 </template>
 

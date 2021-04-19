@@ -3,8 +3,6 @@
     <div class="col-10">
       <p>Broadcast</p>
       <p v-if="isRecoding">This session is being recorded</p>
-      <button v-on:click="toggleTTS()" id="toggleTTSButton" class="btn btn-primary">Resume/Pause TTS</button>
-      <button id="nextTTSButton" class="btn btn-primary">Next TTS</button>
       <button id="cameraButton" class="btn btn-primary">Camera</button>
       <button id="micButton" class="btn btn-primary">Microphone</button>
       <button id="audioButton" class="btn btn-primary">Audio</button>

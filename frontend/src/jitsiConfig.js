@@ -1,4 +1,4 @@
-const jitsiDomain = "";
+const jitsiDomain = process.env.VUE_APP_JITSI_DOMAIN;
 
 export const options = {
     hosts: {

@@ -42,10 +42,10 @@ export function onLocalTracks(tracks) {
                 console.log(
                     `track audio output device was changed to ${deviceId}`));
         if (localTracks[i].getType() === 'video') {
-            $('body').append(`<video autoplay='1' id='localVideo${i}' />`);
+            $("#videos").append(`<video autoplay='1' id='localVideo${i}' class="col" style="object-fit: cover" />`);
             localTracks[i].attach($(`#localVideo${i}`)[0]);
         } else {
-            $('body').append(
+            $("#videos").append(
                 `<audio autoplay='1' muted='true' id='localAudio${i}' />`);
             localTracks[i].attach($(`#localAudio${i}`)[0]);
         }
@@ -86,10 +86,10 @@ export function onRemoteTrack(track) {
     const id = participant + track.getType() + idx;
 
     if (track.getType() === 'video') {
-        $('body').append(
-            `<video autoplay='1' id='${participant}video${idx}' />`);
+        $("#videos").append(
+            `<video autoplay='1' id='${participant}video${idx}' class="col" style="object-fit: cover" />`);
     } else {
-        $('body').append(
+        $("#videos").append(
             `<audio autoplay='1' id='${participant}audio${idx}' />`);
     }
     track.attach($(`#${id}`)[0]);
