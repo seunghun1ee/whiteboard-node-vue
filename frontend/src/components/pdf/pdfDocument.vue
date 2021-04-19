@@ -2,7 +2,8 @@
   <div>
     <button v-on:click="prevPage" class="btn btn-primary">prev</button>
     <button v-on:click="nextPage" class="btn btn-primary">next</button>
-    <pdf-page v-if="pages[currentPage]" v-bind="{page:pages[currentPage],scale:scale}" :key="currentPage"></pdf-page>
+    <br>
+    <pdf-page v-if="pages[currentPage] && scales[currentPage]" v-bind="{page:pages[currentPage],scale:scales[currentPage]}" :key="currentPage"></pdf-page>
   </div>
 </template>
 
@@ -22,7 +23,10 @@ export default {
     return {
       pdf: undefined,
       pages: [],
-      currentPage: 0
+      scales: [],
+      currentPage: 0,
+      parentWidth: 0,
+      parentHeight: 0
     }
   },
   sockets:{
@@ -31,7 +35,13 @@ export default {
     }
   },
   created() {
+    this.parentWidth = this.$parent.$el.offsetWidth * 0.7;
+    this.parentHeight = window.innerHeight * 0.7;
     this.fetchPDF();
+    console.log("parent", this.parentWidth, this.parentHeight);
+  },
+  mounted() {
+
   },
   methods: {
     fetchPDF() {
@@ -42,7 +52,6 @@ export default {
             return pdfjs.getDocument(this.url).promise;
           }
           else if(this.data) {
-            console.log(typeof(this.data));
             return pdfjs.getDocument({data:this.data}).promise;
           }
           return null;
@@ -73,7 +82,14 @@ export default {
         const pagePromises = lodashRange(1, pdf.numPages)
             .map(number => pdf.getPage(number));
         Promise.all(pagePromises)
-            .then(pages => {this.pages = pages; console.log(this.pages)});
+            .then(pages => {this.pages = pages; console.log(this.pages)})
+            .then(() => {
+              this.pages.map(page => {
+                const temp = page.getViewport({scale: 1});
+                const scale = Math.min((this.parentWidth/temp.width),(this.parentHeight/temp.height));
+                this.scales.push(scale);
+              })
+            });
       }
     }
   }

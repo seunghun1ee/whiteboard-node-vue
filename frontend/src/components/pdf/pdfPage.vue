@@ -26,6 +26,7 @@ export default {
     },
     canvasStyle() {
       const {width: actualSizeWidth, height: actualSizeHeight} = this.actualSizeViewport;
+      console.log("pdfPage", this.actualSizeViewport);
       const pixelRatio = window.devicePixelRatio || 1;
       const [pixelWidth, pixelHeight] = [actualSizeWidth, actualSizeHeight]
           .map(dim => Math.ceil(dim / pixelRatio));
@@ -44,7 +45,6 @@ export default {
       const renderContext = {canvasContext, viewport};
 
       // PDFPageProxy#render
-      // https://mozilla.github.io/pdf.js/api/draft/PDFPageProxy.html
       this.renderTask = this.page.render(renderContext);
       this.renderTask.promise.then(() => {
         this.$emit('rendered', this.page);
