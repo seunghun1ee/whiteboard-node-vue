@@ -12,7 +12,7 @@
       <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">Stop presentation</button>
       <pdf-document v-if="b64PdfData" v-bind:data="b64PdfData" v-bind:scale="1" :key="b64PdfData"></pdf-document>
 <!--      <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:5000,time:10000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>-->
-      <jitsi></jitsi>
+      <jitsi v-bind:hidden="jitsiHidden"></jitsi>
     </div>
     <div class="col-2">
       <chat-box></chat-box>
@@ -40,7 +40,8 @@ export default {
       isRecoding: false,
       recordCount: 0,
       isPdfReady: false,
-      b64PdfData: null
+      b64PdfData: null,
+      jitsiHidden: false
     }
   },
   sockets: {
@@ -64,10 +65,12 @@ export default {
     presenting_pdf: function (data) {
       this.isPdfReady = true;
       this.b64PdfData = atob(data);
+      this.jitsiHidden = true;
     },
     presentation_stopped: function () {
       this.isPdfReady = false;
       this.b64PdfData = null;
+      this.jitsiHidden = false;
     }
   },
   created() {
@@ -103,6 +106,10 @@ export default {
       this.isPdfReady = false;
       console.log("presentation stops");
       this.$socket.emit("stop_presenting_pdf");
+      this.jitsiHidden = false;
+    },
+    onPdfUploaded() {
+      this.jitsiHidden = true;
     }
   }
 }

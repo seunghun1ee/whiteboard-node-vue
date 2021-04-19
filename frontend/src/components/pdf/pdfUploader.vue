@@ -35,6 +35,7 @@ export default {
       formData.append("pdf",this.pdfFile,this.pdfFile.name);
       uploadPdf(formData).then(res => {
         console.log(res);
+        this.$emit("pdfUploaded");
       }).catch(err => alert(err));
     }
   }
