@@ -241,14 +241,13 @@ export function changeAudioOutput(selected) { // eslint-disable-line no-unused-v
 $(window).bind('beforeunload', unload);
 $(window).bind('unload', unload);
 
-// JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.ERROR);
 const initOptions = {
     disableAudioLevels: true
 };
 
 export function jitsiInit() {
     JitsiMeetJS.init(initOptions);
-    JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.INFO);
+    JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.ERROR);
 }
 
 export function connect() {
