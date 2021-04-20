@@ -251,7 +251,6 @@ export function jitsiInit() {
 }
 
 export function connect() {
-    console.log(process.env.JITSI_DOMAIN);
     connection = new JitsiMeetJS.JitsiConnection(null, null, options);
 
     connection.addEventListener(
