@@ -6,6 +6,7 @@ const app = express();
 const http = require("http").createServer(app);
 const port = 3000;
 const path = require("path");
+const cors = require("cors");
 const io = require("socket.io")(http, {
     cors: {
         origin: "*",
@@ -13,7 +14,6 @@ const io = require("socket.io")(http, {
     }
 });
 const bodyParser = require("body-parser");
-const cors = require("cors");
 
 const multer = require("multer");
 const storage = multer.diskStorage({

@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.VUE_APP_BACKEND;
 
 export function getPosts() {
     return axios.get(BASE_URL+"/api/posts").then(res => res.data);
