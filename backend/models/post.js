@@ -7,7 +7,8 @@ const postSchema = new mongoose.Schema({
     tags: {type: Array, default: []},
     body: {type: String, default: "", required: true},
     anonymous: {type: Boolean, default: false},
-    comments: {type: Array, default: []}
+    comments: {type: Array, default: []},
+    answered: {type: Boolean, default: false}
 },{
     timestamps: true
 });

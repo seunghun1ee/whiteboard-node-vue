@@ -203,6 +203,19 @@ app.get("/api/tags", (req,res) => {
    res.send(tags);
 });
 
+app.patch("/api/posts/:postId/newTags", (req,res) => {
+    const newTags = [];
+    req.body.map(tagId => {
+       newTags.push(tags[tagId]);
+    });
+    console.log(req.params);
+    Post.updateOne({_id: req.params.postId},{ $push: { tags:{ $each: newTags } } })
+        .then(() => {
+            console.log("new tags saved");
+            res.send(newTags);
+        });
+});
+
 app.post("/api/uploadPdf", (req,res) => {
     multer({storage: storage, fileFilter: pdfFilter}).single("pdf")(req,res,function (err) {
         if (err instanceof multer.MulterError) {

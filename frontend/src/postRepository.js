@@ -25,3 +25,7 @@ export function saveComment(postId, comment) {
 export function getTags() {
     return axios.get(`${BASE_URL}/api/tags`).then(res => res.data);
 }
+
+export function saveTags(postId, tagIds) {
+    return axios.patch(`${BASE_URL}/api/posts/${postId}/newTags`,tagIds).then(res => res.data);
+}
