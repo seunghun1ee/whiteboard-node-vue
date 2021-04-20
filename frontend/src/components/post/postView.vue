@@ -17,7 +17,7 @@
       <div class="mb-5">
         <p>{{post.body}}</p>
       </div>
-      <button v-on:click="onMarkAsAnswered" class="btn btn-sm btn-outline-success">Mark as answered</button>
+      <button v-if="!this.post.answered" v-on:click="onMarkAsAnswered" class="btn btn-sm btn-outline-success">Mark as answered</button>
       <br>
       <small v-if="post.comments.length === 1" :key="post.comments.length">1 Comment</small>
       <small v-else :key="post.comments.length">{{post.comments.length}} Comments</small>
@@ -32,7 +32,7 @@
 
 <script>
 import {getUnitById} from "@/unitRepository";
-import {getPostById, saveTags} from "@/postRepository";
+import {getPostById, markAnswered} from "@/postRepository";
 import unit from "@/components/unit";
 import Comment from "@/components/post/comment";
 import NewCommentForm from "@/components/post/newCommentForm";
@@ -81,11 +81,8 @@ export default {
       vue.$socket.emit("save_new_comment",newComment,room);
     },
     onMarkAsAnswered() {
-      saveTags(this.post._id,[0])
-          .then(res => {
-            this.post.tags = res
-
-          })
+      markAnswered(this.post._id,true)
+          .then(res => this.post = res)
           .catch(err => alert(err));
     }
   }

@@ -29,3 +29,7 @@ export function getTags() {
 export function saveTags(postId, tagIds) {
     return axios.patch(`${BASE_URL}/api/posts/${postId}/newTags`,tagIds).then(res => res.data);
 }
+
+export function markAnswered(postId) {
+    return axios.patch(`${BASE_URL}/api/posts/${postId}/markAnswered`).then(res => res.data);
+}

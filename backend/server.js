@@ -216,6 +216,18 @@ app.patch("/api/posts/:postId/newTags", (req,res) => {
         });
 });
 
+app.patch("/api/posts/:postId/markAnswered",(req,res) => {
+    console.log(req.params);
+    Post.updateOne({_id: req.params.postId},{answered: true, $push: { tags: tags[0] }})
+        .then(() => {
+            Post.findOne({_id: req.params.postId})
+                .then(data => {
+                    console.log("post marked as answered");
+                    res.send(data.toJSON());
+                });
+        });
+})
+
 app.post("/api/uploadPdf", (req,res) => {
     multer({storage: storage, fileFilter: pdfFilter}).single("pdf")(req,res,function (err) {
         if (err instanceof multer.MulterError) {
@@ -286,6 +298,7 @@ app.get("/api/test", (req,res) => {
         tags: [tags[1],tags[0]],
         body: "Hi, why does x behave like y?",
         anonymous: false,
+        answered: true,
         comments: [
             new Comment({
                 author: "Brad Cornwall",
