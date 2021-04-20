@@ -6,6 +6,7 @@
         <div class="mt-2 pt-2 border-top">
           <button v-on:click="recordButton" id="toastRecordButton" type="button" class="btn btn-danger btn-sm">Record</button>
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+          <button v-on:click="dontShowAgain" type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Don't show again</button>
         </div>
       </div>
     </div>
@@ -51,6 +52,11 @@ export default {
       clearInterval(this.timer);
       this.bootstrapAlert.dispose();
       this.$emit("toastRecordClicked");
+    },
+    dontShowAgain() {
+      clearTimeout(this.initialTimer);
+      clearInterval(this.timer);
+      this.bootstrapAlert.dispose();
     }
   }
 }
