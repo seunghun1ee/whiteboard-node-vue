@@ -163,6 +163,15 @@ app.get("/api/posts/unitId/:id", (req,res) => {
     }).catch(err => res.send(`Internal server error, ${err}`));
 });
 
+app.get("/api/posts/unitId/:id/tagId/:tagId", (req,res) => {
+    let unitId = req.params.id;
+    let tagId = req.params.tagId;
+    let tag = tags[tagId];
+    Post.find({unitId: unitId, tags: tag}).sort({createdAt: -1}).then(posts => {
+        res.send(posts.map(post => post.toJSON()));
+    }).catch(err => res.send(`Internal server error, ${err}`));
+});
+
 app.post("/api/posts/newPost", (req,res) => {
     let selectedTags = [];
     req.body.tags.forEach(id => {

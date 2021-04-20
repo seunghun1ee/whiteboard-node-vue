@@ -33,3 +33,7 @@ export function saveTags(postId, tagIds) {
 export function markAnswered(postId) {
     return axios.patch(`${BASE_URL}/api/posts/${postId}/markAnswered`).then(res => res.data);
 }
+
+export function getPostByUnitAndTagId(unitId, tagId) {
+    return axios.get(`${BASE_URL}/api/posts/unitId/${unitId}/tagId/${tagId}`).then(res => res.data);
+}
