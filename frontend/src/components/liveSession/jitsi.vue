@@ -3,6 +3,10 @@
     <p>jitsi space</p>
     <button v-on:click="joinRoom(roomName)">Join room</button>
     <button v-on:click="unload">Leave room</button>
+    <button id="cameraButton" class="btn btn-primary">Camera</button>
+    <button id="micButton" class="btn btn-primary">Microphone</button>
+    <button id="audioButton" class="btn btn-primary">Audio</button>
+    <button id="screenButton" class="btn btn-primary" v-on:click="switchVideo">Share screen</button>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4" v-for="video in videos" :key="video.id" v-html="video">
 
     </div>
@@ -72,7 +76,7 @@ export default {
                 console.log(
                     `track audio output device was changed to ${deviceId}`));
         if (this.localTracks[i].getType() === 'video') {
-          this.videos.push(`<video autoplay='1' id='localVideo${i}' class="col" style="object-fit: cover" />`);
+          this.videos.push(`<video autoplay='1' id='localVideo${i}' class='col' style='object-fit: cover' />`);
           this.$nextTick(() => {
             this.localTracks[i].attach($(`#localVideo${i}`)[0]);
           });
@@ -122,7 +126,7 @@ export default {
       const id = participant + track.getType() + idx;
 
       if (track.getType() === 'video') {
-        this.videos.push(`<video autoplay='1' id='${participant}video${idx}' class="col" style="object-fit: cover" />`);
+        this.videos.push(`<video autoplay='1' id='${participant}video${idx}' class='col' style='object-fit: cover' />`);
       } else {
         this.audios.push(`<audio autoplay='1' id='${participant}audio${idx}' />`);
       }
@@ -210,6 +214,28 @@ export default {
           JitsiMeetJS.events.conference.PHONE_NUMBER_CHANGED,
           () => console.log(`${this.room.getPhoneNumber()} - ${this.room.getPhonePin()}`));
       this.room.join();
+    },
+    switchVideo() {
+      this.isVideo = !this.isVideo;
+      if (this.localTracks[1]) {
+        this.localTracks[1].dispose();
+        this.localTracks.pop();
+      }
+      JitsiMeetJS.createLocalTracks({
+        devices: [ this.isVideo ? 'video' : 'desktop' ]
+      })
+          .then(tracks => {
+            this.localTracks.push(tracks[0]);
+            this.localTracks[1].addEventListener(
+                JitsiMeetJS.events.track.TRACK_MUTE_CHANGED,
+                () => console.log('local track muted'));
+            this.localTracks[1].addEventListener(
+                JitsiMeetJS.events.track.LOCAL_TRACK_STOPPED,
+                () => console.log('local track stoped'));
+            this.localTracks[1].attach($('#localVideo1')[0]);
+            this.room.addTrack(this.localTracks[1]);
+          })
+          .catch(error => console.log(error));
     },
     unload() {
       for (let i = 0; i < this.localTracks.length; i++) {
