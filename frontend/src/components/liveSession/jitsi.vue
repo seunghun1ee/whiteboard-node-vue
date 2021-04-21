@@ -3,8 +3,10 @@
     <p>jitsi space</p>
     <button v-on:click="joinRoom(roomName)">Join room</button>
     <button v-on:click="unload">Leave room</button>
-    <div id="videos" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"  v-for="video in videos" :key="video.id" v-html="video"></div>
-    <div id="audios" v-for="audio in audios" :key="audio.id" v-html="audio"></div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4" v-for="video in videos" :key="video.id" v-html="video">
+
+    </div>
+    <div v-for="audio in audios" :key="audio.id" v-html="audio"></div>
   </div>
 </template>
 
@@ -14,7 +16,6 @@ import $ from "jquery";
 import JitsiMeetJS from "@lyno/lib-jitsi-meet";
 import {options} from "@/jitsiConfig";
 import {
-  disconnect,
   onConferenceJoined,
   onConnectionFailed,
   onConnectionSuccess,
@@ -72,16 +73,11 @@ export default {
                 console.log(
                     `track audio output device was changed to ${deviceId}`));
         if (this.localTracks[i].getType() === 'video') {
-          //$("#videos").append(`<video autoplay='1' id='localVideo${i}' class="col" style="object-fit: cover" />`);
-          // this.localTracks[i].attach(localVideo);
           this.videos.push(`<video autoplay='1' id='localVideo${i}' class="col" style="object-fit: cover" />`);
           this.$nextTick(() => {
             this.localTracks[i].attach($(`#localVideo${i}`)[0]);
           });
         } else {
-          // $("#videos").append(
-          //     `<audio autoplay='1' muted='true' id='localAudio${i}' />`);
-          // this.localTracks[i].attach($(`#localAudio${i}`)[0]);
           this.audios.push(`<audio autoplay='1' muted='true' id='localAudio${i}' />`);
           this.$nextTick(() => {
             this.localTracks[i].attach($(`#localAudio${i}`)[0]);
@@ -127,13 +123,14 @@ export default {
       const id = participant + track.getType() + idx;
 
       if (track.getType() === 'video') {
-        $("#videos").append(
-            `<video autoplay='1' id='${participant}video${idx}' class="col" style="object-fit: cover" />`);
+        this.videos.push(`<video autoplay='1' id='${participant}video${idx}' class="col" style="object-fit: cover" />`);
       } else {
-        $("#videos").append(
-            `<audio autoplay='1' id='${participant}audio${idx}' />`);
+        this.audios.push(`<audio autoplay='1' id='${participant}audio${idx}' />`);
       }
-      track.attach($(`#${id}`)[0]);
+      this.$nextTick(() => {
+        track.attach($(`#${id}`)[0]);
+      });
+
     },
     onUserLeft(id) {
       console.log('user left');
@@ -157,13 +154,25 @@ export default {
           onConnectionFailed);
       this.connection.addEventListener(
           JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
-          disconnect);
+          this.onDisconnect);
 
       JitsiMeetJS.mediaDevices.addEventListener(
           JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED,
           onDeviceListChanged);
 
       this.connection.connect();
+    },
+    onDisconnect() {
+      console.log('disconnect!');
+      this.connection.removeEventListener(
+          JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
+          onConnectionSuccess);
+      this.connection.removeEventListener(
+          JitsiMeetJS.events.connection.CONNECTION_FAILED,
+          onConnectionFailed);
+      this.connection.removeEventListener(
+          JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
+          this.onDisconnect);
     },
     joinRoom(roomName) {
       const confOptions = {
