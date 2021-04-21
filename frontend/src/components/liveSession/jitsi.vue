@@ -16,7 +16,6 @@ import $ from "jquery";
 import JitsiMeetJS from "@lyno/lib-jitsi-meet";
 import {options} from "@/jitsiConfig";
 import {
-  onConferenceJoined,
   onConnectionFailed,
   onConnectionSuccess,
   onDeviceListChanged,
@@ -132,6 +131,13 @@ export default {
       });
 
     },
+    onConferenceJoined() {
+      console.log('conference joined!');
+      this.isJoined = true;
+      for (let i = 0; i < this.localTracks.length; i++) {
+        this.room.addTrack(this.localTracks[i]);
+      }
+    },
     onUserLeft(id) {
       console.log('user left');
       if (!this.remoteTracks[id]) {
@@ -185,7 +191,7 @@ export default {
       });
       this.room.on(
           JitsiMeetJS.events.conference.CONFERENCE_JOINED,
-          onConferenceJoined);
+          this.onConferenceJoined);
       this.room.on(JitsiMeetJS.events.conference.USER_JOINED, id => {
         console.log('user join');
         this.remoteTracks[id] = [];
