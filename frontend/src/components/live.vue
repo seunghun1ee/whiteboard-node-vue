@@ -2,11 +2,7 @@
   <div class="row">
     <div id="liveArea" class="col-10">
       <p v-if="isRecoding">This session is being recorded</p>
-      <button id="cameraButton" class="btn btn-primary">Camera</button>
-      <button id="micButton" class="btn btn-primary">Microphone</button>
-      <button id="audioButton" class="btn btn-primary">Audio</button>
       <button v-on:click="onRecordClicked" id="recordButton" class="btn btn-danger">Record</button>
-      <button id="screenButton" class="btn btn-primary">Share screen</button>
       <pdf-uploader></pdf-uploader>
       <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">Stop presentation</button>
       <pdf-document v-if="b64PdfData" :key="b64PdfData" v-bind="{data: b64PdfData, scale: 1, width: 1000, height: 563}"></pdf-document>

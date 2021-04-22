@@ -1,12 +1,11 @@
 <template>
   <div>
     <p>jitsi space</p>
-    <button v-on:click="joinRoom(roomName)">Join room</button>
-    <button v-on:click="unload">Leave room</button>
-    <button id="cameraButton" class="btn btn-primary">Camera</button>
-    <button id="micButton" class="btn btn-primary">Microphone</button>
-    <button id="audioButton" class="btn btn-primary">Audio</button>
+<!--    <button v-on:click="joinRoom(roomName)">Join room</button>-->
+    <button id="cameraButton" class="btn btn-primary" v-on:click="localTrackToggle('video')">Camera</button>
+    <button id="micButton" class="btn btn-primary" v-on:click="localTrackToggle('audio')">Microphone</button>
     <button id="screenButton" class="btn btn-primary" v-on:click="switchVideo">Share screen</button>
+    <button class="btn btn-danger" v-on:click="unload()">Leave room</button>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4" v-for="video in videos" :key="video.id" v-html="video">
 
     </div>
@@ -21,7 +20,6 @@ import JitsiMeetJS from "@lyno/lib-jitsi-meet";
 import {options} from "@/jitsiConfig";
 import {
   onConnectionFailed,
-  onConnectionSuccess,
   onDeviceListChanged,
 } from "@/jitsi";
 
@@ -44,11 +42,13 @@ export default {
   mounted() {
     window.$ = $;
     this.jitsiInit();
-    this.createLocalTracks();
     this.connect();
+    this.createLocalTracks();
   },
   beforeDestroy() {
-    this.unload();
+    if(this.isJoined) {
+      this.unload();
+    }
   },
   methods: {
     jitsiInit() {
@@ -118,7 +118,7 @@ export default {
           () => console.log('remote track muted'));
       track.addEventListener(
           JitsiMeetJS.events.track.LOCAL_TRACK_STOPPED,
-          () => console.log('remote track stoped'));
+          () => console.log('remote track stopped'));
       track.addEventListener(JitsiMeetJS.events.track.TRACK_AUDIO_OUTPUT_CHANGED,
           deviceId =>
               console.log(
@@ -135,8 +135,12 @@ export default {
       });
 
     },
+    onConnectionSuccess() {
+      console.log("Server connected");
+      this.joinRoom(`${process.env.VUE_APP_JITSI_ROOM}`);
+    },
     onConferenceJoined() {
-      console.log('conference joined!');
+      console.log(`conference joined! room name: ${this.roomName}`);
       this.isJoined = true;
       for (let i = 0; i < this.localTracks.length; i++) {
         this.room.addTrack(this.localTracks[i]);
@@ -150,7 +154,8 @@ export default {
       const tracks = this.remoteTracks[id];
 
       for (let i = 0; i < tracks.length; i++) {
-        tracks[i].detach($(`#${id}${tracks[i].getType()}`));
+        console.log($(`#${id}${tracks[i].getType()}2`));
+        // tracks[i].detach($(`#${id}${tracks[i].getType()}`));
       }
     },
     connect() {
@@ -158,7 +163,7 @@ export default {
 
       this.connection.addEventListener(
           JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
-          onConnectionSuccess);
+          this.onConnectionSuccess);
       this.connection.addEventListener(
           JitsiMeetJS.events.connection.CONNECTION_FAILED,
           onConnectionFailed);
@@ -176,7 +181,7 @@ export default {
       console.log('disconnect!');
       this.connection.removeEventListener(
           JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
-          onConnectionSuccess);
+          this.onConnectionSuccess);
       this.connection.removeEventListener(
           JitsiMeetJS.events.connection.CONNECTION_FAILED,
           onConnectionFailed);
@@ -202,7 +207,7 @@ export default {
       });
       this.room.on(JitsiMeetJS.events.conference.USER_LEFT, this.onUserLeft);
       this.room.on(JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, track => {
-        console.log(`${track.getType()} - ${track.isMuted()}`);
+        console.log(`${track.getType()} - isMuted: ${track.isMuted()}`);
       });
       this.room.on(
           JitsiMeetJS.events.conference.DISPLAY_NAME_CHANGED,
@@ -214,6 +219,18 @@ export default {
           JitsiMeetJS.events.conference.PHONE_NUMBER_CHANGED,
           () => console.log(`${this.room.getPhoneNumber()} - ${this.room.getPhonePin()}`));
       this.room.join();
+    },
+    localTrackToggle(type) {
+      for(let i = 0; i < this.localTracks.length; i++) {
+        if(this.localTracks[i].getType() === type) {
+          if(this.localTracks[i].isMuted()) {
+            this.localTracks[i].unmute();
+          }
+          else {
+            this.localTracks[i].mute();
+          }
+        }
+      }
     },
     switchVideo() {
       this.isVideo = !this.isVideo;
@@ -241,8 +258,13 @@ export default {
       for (let i = 0; i < this.localTracks.length; i++) {
         this.localTracks[i].dispose();
       }
-      this.room.leave();
+      this.room.leave()
       this.connection.disconnect();
+      this.isJoined = false;
+      this.leavePage();
+    },
+    leavePage() {
+      this.$router.push("/");
     }
   }
 
