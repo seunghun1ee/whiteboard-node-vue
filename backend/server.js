@@ -4,7 +4,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
-const port = 3000;
+const https = require("https");
+const fs = require("fs");
+const port = 80;
 const path = require("path");
 const cors = require("cors");
 const io = require("socket.io")(http, {
@@ -16,6 +18,13 @@ const io = require("socket.io")(http, {
 const bodyParser = require("body-parser");
 const history = require("connect-history-api-fallback");
 
+// SSL
+const privateKey = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/privkey.pem`);
+const certificate = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/cert.pem`);
+const chain = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/chain.pem`);
+const credentials = {key: privateKey, cert: certificate, chain: chain};
+
+// pdf
 const multer = require("multer");
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -421,3 +430,4 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
     console.log('listening on *:' + port);
 });
+https.createServer(credentials,app).listen(443);
