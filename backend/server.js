@@ -14,6 +14,7 @@ const io = require("socket.io")(http, {
     }
 });
 const bodyParser = require("body-parser");
+const history = require("connect-history-api-fallback");
 
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -39,6 +40,11 @@ const Comment = require("./models/comment");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname,"static")));
+app.use(history({
+    index: "/",
+    verbose: true
+}));
 
 const users = [
     {id: 0, name: "Alice Wonderland", email:"alice@mail.com"},
@@ -119,8 +125,9 @@ const recordStates = {};
 let pdfPresenting = null;
 
 app.get("/", (req,res) => {
-    res.send("Hello world");
+    res.sendFile(path.join(__dirname,"static/index.html"));
 });
+
 
 app.get("/api/users",(req,res) => {
     res.send(users);

@@ -207,7 +207,7 @@ let isVideo = true;
 /**
  *
  */
-export function switchVideo() { // eslint-disable-line no-unused-vars
+export function switchVideo() {
     isVideo = !isVideo;
     if (localTracks[1]) {
         localTracks[1].dispose();
@@ -251,7 +251,6 @@ export function jitsiInit() {
 }
 
 export function connect() {
-    console.log(process.env.JITSI_DOMAIN);
     connection = new JitsiMeetJS.JitsiConnection(null, null, options);
 
     connection.addEventListener(

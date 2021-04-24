@@ -10,9 +10,10 @@ export const options = {
     enableP2P: true,
     p2p: {
         enabled: true,
-        preferH264: true,
-        disableH264: true,
         useStunTurn: true,
+        disabledCodec: false,
+        preferredCodec: true,
+        disableSimulcast: false
     },
     useStunTurn: true,
     serviceUrl: `https://${jitsiDomain}/http-bind`,
