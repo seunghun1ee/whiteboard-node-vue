@@ -39,6 +39,7 @@ const Comment = require("./models/comment");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname,"static")));
 
 const users = [
     {id: 0, name: "Alice Wonderland", email:"alice@mail.com"},
@@ -119,8 +120,12 @@ const recordStates = {};
 let pdfPresenting = null;
 
 app.get("/", (req,res) => {
-    res.send("Hello world");
+    res.sendFile(path.join(__dirname,"static/index.html"));
 });
+
+app.get("/live", (req,res) => {
+    res.sendFile(path.join(__dirname,"static/live.html"));
+})
 
 app.get("/api/users",(req,res) => {
     res.send(users);
