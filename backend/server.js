@@ -430,6 +430,4 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
     console.log('listening on *:' + port);
 });
-https.createServer(credentials,app).listen(443,hostname => {
-    console.log(`listening at ${hostname}`);
-})
+https.createServer(credentials,app).listen(443);
