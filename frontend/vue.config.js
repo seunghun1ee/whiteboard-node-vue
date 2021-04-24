@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
     outputDir: path.resolve("../backend/static"),
     devServer: {
-      proxy: {
+       proxy: {
           "/api": {
               target: `${process.env.VUE_APP_BACKEND}/api`,
               changeOrigin: true,
@@ -11,7 +11,8 @@ module.exports = {
                   "^/api": ""
               }
           }
-      }
+       },
+        historyApiFallback: true
     },
     pages: {
         index: {
