@@ -12,7 +12,7 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const https = require("https").createServer(credentials,app);
-const port = 3000;
+const port = 80;
 const path = require("path");
 const cors = require("cors");
 const io = require("socket.io")(https, {
@@ -54,7 +54,10 @@ app.use(express.static(path.join(__dirname,"static")));
 
 const historyMiddleware = history({
     index: "/",
-    verbose: true
+    verbose: true,
+    rewrites: [
+        {from: "\/live\/", to: "/live"}
+    ]
 });
 
 app.use((req,res,next) => {
@@ -144,7 +147,7 @@ const tags= [
 const recordStates = {};
 let pdfPresenting = null;
 
-const indexRouter = app.get("/", (req,res) => {
+app.get("/", (req,res) => {
     res.sendFile(path.join(__dirname,"static/index.html"));
 });
 
