@@ -1,15 +1,21 @@
 //environment
 require("dotenv").config();
 
+// SSL
+const fs = require("fs");
+const privateKey = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/privkey.pem`);
+const certificate = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/cert.pem`);
+const chain = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/chain.pem`);
+const credentials = {key: privateKey, cert: certificate, chain: chain};
+
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
-const https = require("https");
-const fs = require("fs");
-const port = 80;
+const https = require("https").createServer(credentials,app);
+const port = 3000;
 const path = require("path");
 const cors = require("cors");
-const io = require("socket.io")(http, {
+const io = require("socket.io")(https, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
@@ -17,12 +23,6 @@ const io = require("socket.io")(http, {
 });
 const bodyParser = require("body-parser");
 const history = require("connect-history-api-fallback");
-
-// SSL
-const privateKey = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/privkey.pem`);
-const certificate = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/cert.pem`);
-const chain = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/chain.pem`);
-const credentials = {key: privateKey, cert: certificate, chain: chain};
 
 // pdf
 const multer = require("multer");
@@ -50,10 +50,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static(path.join(__dirname,"static")));
-app.use(history({
+
+
+const historyMiddleware = history({
     index: "/",
     verbose: true
-}));
+});
+
+app.use((req,res,next) => {
+    if(req.path.match("\/api\/.*") || req.path.match("\/socket\.io\/.*")) {
+        next();
+    }
+    else {
+        historyMiddleware(req,res,next);
+    }
+})
 
 const users = [
     {id: 0, name: "Alice Wonderland", email:"alice@mail.com"},
@@ -133,10 +144,13 @@ const tags= [
 const recordStates = {};
 let pdfPresenting = null;
 
-app.get("/", (req,res) => {
+const indexRouter = app.get("/", (req,res) => {
     res.sendFile(path.join(__dirname,"static/index.html"));
 });
 
+app.get("/live", (req,res) => {
+    res.sendFile(path.join(__dirname,"static/live.html"));
+});
 
 app.get("/api/users",(req,res) => {
     res.send(users);
@@ -430,4 +444,4 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
     console.log('listening on *:' + port);
 });
-https.createServer(credentials,app).listen(443);
+https.listen(443);
