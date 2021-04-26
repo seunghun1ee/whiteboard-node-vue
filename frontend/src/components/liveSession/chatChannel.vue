@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-bind:style="{display: 'block', height: chatHeight+'px', overflow: 'auto'}">
+    <div v-bind:id="channelData.name" class="chat-channel">
       <p>{{channelData.name}}</p>
       <ul id="chatSpace">
         <li v-for="chat in chats" :key="chat + Math.floor(Math.random()*1000)">
@@ -42,10 +42,8 @@ export default {
     }
   },
   mounted() {
-    const menuHeight = this.$parent.$refs.chatMenu.clientHeight;
-    const inputHeight = this.$refs.chatInput.$refs.chatInputForm.clientHeight;
-    console.log(`${this.channelData.name} heights:`,menuHeight,inputHeight);
-    this.chatHeight = 0.9 * window.innerHeight - menuHeight - inputHeight;
+    this.chatHeight = 0.7 * window.innerHeight;
+    document.getElementById(this.channelData.name).setAttribute("style", `height: ${this.chatHeight}px`);
   },
   methods: {
     onChatSent(chatMessage,anonymous) {
@@ -60,7 +58,8 @@ export default {
 <style scoped>
   .chat-channel {
     display: block;
-    height: 400px;
-    overflow: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow-y: auto;
   }
 </style>
