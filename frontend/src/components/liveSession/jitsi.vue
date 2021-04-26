@@ -15,10 +15,6 @@ import JitsiMeetJs from "@lyno/lib-jitsi-meet";
 import $ from "jquery";
 import JitsiMeetJS from "@lyno/lib-jitsi-meet";
 import {options} from "@/jitsiConfig";
-import {
-  onConnectionFailed,
-  onDeviceListChanged,
-} from "@/jitsi";
 
 export default {
   name: "jitsi",
@@ -136,6 +132,12 @@ export default {
       console.log("Server connected");
       this.joinRoom(`${process.env.VUE_APP_JITSI_ROOM}`);
     },
+    onConnectionFailed() {
+      console.error('Connection Failed!');
+    },
+    onDeviceListChanged(devices) {
+      console.info('current devices', devices);
+    },
     onConferenceJoined() {
       console.log(`conference joined! room name: ${this.roomName}`);
       this.isJoined = true;
@@ -163,14 +165,14 @@ export default {
           this.onConnectionSuccess);
       this.connection.addEventListener(
           JitsiMeetJS.events.connection.CONNECTION_FAILED,
-          onConnectionFailed);
+          this.onConnectionFailed);
       this.connection.addEventListener(
           JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
           this.onDisconnect);
 
       JitsiMeetJS.mediaDevices.addEventListener(
           JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED,
-          onDeviceListChanged);
+          this.onDeviceListChanged);
 
       this.connection.connect();
     },
@@ -181,7 +183,7 @@ export default {
           this.onConnectionSuccess);
       this.connection.removeEventListener(
           JitsiMeetJS.events.connection.CONNECTION_FAILED,
-          onConnectionFailed);
+          this.onConnectionFailed);
       this.connection.removeEventListener(
           JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
           this.onDisconnect);
