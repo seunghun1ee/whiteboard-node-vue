@@ -1,13 +1,14 @@
 <template>
   <div>
-    <p>{{channelData.name}}</p>
-    <ul id="chatSpace">
-      <li v-for="chat in chats" :key="chat + Math.floor(Math.random()*1000)">
-        <chat v-bind:message="chat"></chat>
-      </li>
-    </ul>
-
-    <chat-input @chatSent="onChatSent"></chat-input>
+    <div v-bind:style="{display: 'block', height: chatHeight+'px', overflow: 'auto'}">
+      <p>{{channelData.name}}</p>
+      <ul id="chatSpace">
+        <li v-for="chat in chats" :key="chat + Math.floor(Math.random()*1000)">
+          <chat v-bind:message="chat"></chat>
+        </li>
+      </ul>
+    </div>
+    <chat-input ref="chatInput" @chatSent="onChatSent"></chat-input>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ export default {
   },
   data() {
     return {
+      chatHeight: 100,
       chats: []
     }
   },
@@ -39,6 +41,12 @@ export default {
       }
     }
   },
+  mounted() {
+    const menuHeight = this.$parent.$refs.chatMenu.clientHeight;
+    const inputHeight = this.$refs.chatInput.$refs.chatInputForm.clientHeight;
+    console.log(`${this.channelData.name} heights:`,menuHeight,inputHeight);
+    this.chatHeight = 0.9 * window.innerHeight - menuHeight - inputHeight;
+  },
   methods: {
     onChatSent(chatMessage,anonymous) {
       const vue = this
@@ -50,5 +58,9 @@ export default {
 </script>
 
 <style scoped>
-
+  .chat-channel {
+    display: block;
+    height: 400px;
+    overflow: auto;
+  }
 </style>
