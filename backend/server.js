@@ -155,6 +155,11 @@ app.get("/live", (req,res) => {
     res.sendFile(path.join(__dirname,"static/live.html"));
 });
 
+app.get("/files/:filename",(req,res) => {
+    const filename = req.params.filename;
+   res.sendFile(path.join(__dirname,`files/${filename}`));
+});
+
 app.get("/api/users",(req,res) => {
     res.send(users);
 });
