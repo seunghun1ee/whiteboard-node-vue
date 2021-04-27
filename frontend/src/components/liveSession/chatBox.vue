@@ -17,7 +17,7 @@
         </ul>
       </div>
     </div>
-    <chat-channel v-bind:hidden="channelIndex !== channel.id" v-for="channel in channels" :key="channel.id" v-bind:channel-data="channel"></chat-channel>
+    <chat-channel v-bind:hidden="channelIndex !== channel.id" v-for="channel in channels" :key="channel.id" v-bind:username="username" v-bind:channel-data="channel"></chat-channel>
   </div>
 </template>
 
@@ -28,9 +28,13 @@ export default {
   components: {ChatChannel},
   data() {
     return {
+      username: "User",
       channelIndex: 0,
       channels: [{id: 0, name: "default"}, {id: 1, name: "secondary"}, {id: 2, name: "private"}]
     }
+  },
+  mounted() {
+    this.username = prompt("Please enter the name to use", "User");
   }
 }
 </script>
