@@ -20,6 +20,7 @@ export default {
   name: "chatChannel",
   components: {ChatInput, Chat},
   props: {
+    username: String,
     channelData : Object
   },
   data() {
@@ -35,8 +36,8 @@ export default {
           this.chats.push(`Anonymous: ${data.chat}`);
         }
         else {
-          const shortId = data.id.substr(0,4);
-          this.chats.push(`${shortId}: ${data.chat}`);
+          //const shortId = data.id.substr(0,4);
+          this.chats.push(`${data.id}: ${data.chat}`);
         }
       }
     }
@@ -48,8 +49,8 @@ export default {
   methods: {
     onChatSent(chatMessage,anonymous) {
       const vue = this
-      vue.$socket.emit("send_chat",chatMessage,anonymous,room,this.channelData.id);
-      this.chats.push(`myId: ${chatMessage}`);
+      vue.$socket.emit("send_chat",this.username,chatMessage,anonymous,room,this.channelData.id);
+      this.chats.push(`Me: ${chatMessage}`);
     }
   }
 }

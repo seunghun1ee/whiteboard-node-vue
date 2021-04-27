@@ -4,8 +4,8 @@
       <p v-if="isRecoding">This session is being recorded</p>
       <pdf-uploader></pdf-uploader>
       <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">Stop presentation</button>
-      <pdf-document v-if="b64PdfData" :key="b64PdfData" v-bind="{data: b64PdfData, scale: 1, width: 1000, height: 563}"></pdf-document>
-      <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:5000,time:10000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>
+      <pdf-document v-if="b64PdfData" :key="b64PdfData" v-bind="{data: b64PdfData, scale: 1}"></pdf-document>
+      <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:10000,time:600000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>
       <jitsi v-bind:hidden="jitsiHidden" v-on:mainRecordClicked="onRecordClicked"></jitsi>
     </div>
     <div class="col-2">
