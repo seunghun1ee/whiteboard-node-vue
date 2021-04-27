@@ -17,12 +17,11 @@
       <div class="mb-5">
         <p>{{post.body}}</p>
       </div>
-      <button v-if="!this.post.answered" v-on:click="onMarkAsAnswered" class="btn btn-sm btn-outline-success">Mark as answered</button>
       <br>
       <small v-if="post.comments.length === 1" :key="post.comments.length">1 Comment</small>
       <small v-else :key="post.comments.length">{{post.comments.length}} Comments</small>
       <hr>
-      <comment v-for="comment in post.comments" :key="comment.body" v-bind:comment-data="comment"></comment>
+      <comment v-for="comment in post.comments" :key="comment.body" v-bind:comment-data="comment" v-bind:post-answered="post.answered" v-on:markCommentAnswer="onMarkCommentAnswer" v-on:unmarkCommentAnswer="onUnmarkCommentAnswer"></comment>
     </div>
 
     <new-comment-form @newCommentSaved="onNewCommentSaved"></new-comment-form>
@@ -32,7 +31,7 @@
 
 <script>
 import {getUnitById} from "@/unitRepository";
-import {getPostById, markAnswered} from "@/postRepository";
+import {getPostById, markCommentAnswer} from "@/postRepository";
 import unit from "@/components/unit";
 import Comment from "@/components/post/comment";
 import NewCommentForm from "@/components/post/newCommentForm";
@@ -80,8 +79,13 @@ export default {
       this.post.comments.push(newComment);
       vue.$socket.emit("save_new_comment",newComment,room);
     },
-    onMarkAsAnswered() {
-      markAnswered(this.post._id,true)
+    onMarkCommentAnswer(commentId) {
+      markCommentAnswer(this.post._id,commentId,true)
+          .then(res => this.post = res)
+          .catch(err => alert(err));
+    },
+    onUnmarkCommentAnswer(commentId) {
+      markCommentAnswer(this.post._id,commentId,false)
           .then(res => this.post = res)
           .catch(err => alert(err));
     }

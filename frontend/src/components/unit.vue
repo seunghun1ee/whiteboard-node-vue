@@ -16,7 +16,7 @@
     <div>
       <h2>Assessments</h2>
       <ul>
-        <li><a href="/coursework/1/">Lorem ipsum</a></li>
+        <li><a href="/coursework/1/">Demo Coursework</a></li>
       </ul>
     </div>
 

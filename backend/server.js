@@ -155,6 +155,11 @@ app.get("/live", (req,res) => {
     res.sendFile(path.join(__dirname,"static/live.html"));
 });
 
+app.get("/files/:filename",(req,res) => {
+    const filename = req.params.filename;
+   res.sendFile(path.join(__dirname,`files/${filename}`));
+});
+
 app.get("/api/users",(req,res) => {
     res.send(users);
 });
@@ -268,6 +273,30 @@ app.patch("/api/posts/:postId/markAnswered",(req,res) => {
                     res.send(data.toJSON());
                 });
         });
+})
+
+app.patch("/api/posts/:postId/markCommentAnswer", (req,res) => {
+    const postId = req.params.postId;
+    const commentId = req.query.commentId;
+    const answered = req.query.answered === "true";
+    console.log(postId, commentId, answered);
+    Post.updateOne({_id: postId, "comments._id": mongoose.Types.ObjectId(commentId)}, {answered: answered, $set: {"comments.$.answer": answered}}).then(() => {
+        if(answered) {
+            Post.updateOne({_id: postId},{ $push: { tags: tags[0] } }).then(() => {
+                Post.findOne({_id: postId}).then(data => {
+                    res.send(data.toJSON());
+                });
+            });
+        }
+        else {
+            Post.updateOne({_id: postId}, { $pull: { tags: {id: 0} } }).then(() => {
+                Post.findOne({_id: postId}).then(data => {
+                    res.send(data.toJSON());
+                });
+            });
+        }
+
+    })
 })
 
 app.post("/api/uploadPdf", (req,res) => {
