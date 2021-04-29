@@ -2,6 +2,8 @@
   <div>
     <button v-on:click="prevPage" class="btn btn-primary">prev</button>
     <button v-on:click="nextPage" class="btn btn-primary">next</button>
+    <p v-if="currentPage + 1 <= pages.length">{{currentPage + 1}} / {{pages.length}}</p>
+    <p v-else>Slide show finished</p>
     <br>
     <pdf-page v-if="pages[currentPage] && scales[currentPage]" v-bind="{page:pages[currentPage],scale:scales[currentPage]}" :key="currentPage"></pdf-page>
   </div>
@@ -61,7 +63,7 @@ export default {
       });
     },
     nextPage() {
-      if(this.currentPage < this.pages.length - 1) {
+      if(this.currentPage < this.pages.length) {
         this.currentPage++;
         this.$socket.emit("pdf_page_change",this.currentPage);
       }
@@ -79,7 +81,7 @@ export default {
         this.pages = [];
         this.currentPage = 0;
         console.log("pdf watcher",pdf);
-        const pagePromises = lodashRange(1, pdf.numPages)
+        const pagePromises = lodashRange(1, pdf.numPages+1)
             .map(number => pdf.getPage(number));
         Promise.all(pagePromises)
             .then(pages => {this.pages = pages; console.log(this.pages)})
