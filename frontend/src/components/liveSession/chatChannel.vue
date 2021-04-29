@@ -62,5 +62,6 @@ export default {
     overflow-wrap: break-word;
     word-wrap: break-word;
     overflow-y: auto;
+    margin-right: 2rem;
   }
 </style>

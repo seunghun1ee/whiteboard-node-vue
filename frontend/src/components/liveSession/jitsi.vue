@@ -3,7 +3,6 @@
     <button id="cameraButton" class="btn btn-primary" v-on:click="localTrackToggle('video')">Camera</button>
     <button id="micButton" class="btn btn-primary" v-on:click="localTrackToggle('audio')">Microphone</button>
     <button v-on:click="recordButton" id="recordButton" class="btn btn-danger">Record</button>
-    <button id="screenButton" class="btn btn-primary" v-on:click="switchVideo">Share screen</button>
     <button class="btn btn-danger" v-on:click="unload()">Leave room</button>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4" v-for="video in videos" :key="video.id" v-html="video"></div>
     <div v-for="audio in audios" :key="audio.id" v-html="audio"></div>
