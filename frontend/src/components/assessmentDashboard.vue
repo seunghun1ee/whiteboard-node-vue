@@ -11,7 +11,9 @@
       </div>
       <div class="col">
         <h3>Exam today</h3>
-        <p>You don't have any exams today</p>
+        <ul>
+          <li>COMS10001 Theory of Computation - 10:00 Today</li>
+        </ul>
       </div>
       <div class="col">
         <h3>Upcoming exams</h3>
@@ -26,7 +28,7 @@
     <hr>
     <ul>
       <li>
-        <a href="/coursework/1/">Demo Coursework - COMS10001 Theory of Computation</a> - {{timeLeft}}
+        <a href="/coursework/1/">Demo Coursework - TEST10004 Whiteboard demo course</a> - {{timeLeft}}
       </li>
     </ul>
   </div>
