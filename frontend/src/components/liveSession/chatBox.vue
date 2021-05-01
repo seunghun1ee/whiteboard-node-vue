@@ -30,7 +30,7 @@ export default {
     return {
       username: "User",
       channelIndex: 0,
-      channels: [{id: 0, name: "default"}, {id: 1, name: "secondary"}, {id: 2, name: "private"}]
+      channels: [{id: 0, name: "Default"}, {id: 1, name: "Social 1"}, {id: 2, name: "Social 2"}]
     }
   },
   mounted() {

@@ -3,10 +3,16 @@
     <div id="liveArea" class="col-10">
       <p v-if="isRecoding">This session is being recorded</p>
       <pdf-uploader></pdf-uploader>
-      <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">Stop presentation</button>
+      <button class="btn btn-secondary" v-if="isPdfReady" v-on:click="onStopPresentation">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+        Stop presentation
+      </button>
       <pdf-document v-if="b64PdfData" :key="b64PdfData" v-bind="{data: b64PdfData, scale: 1}"></pdf-document>
       <record-reminder v-if="!isRecoding && recordCount === 0" v-bind="{firstTime:10000,time:600000}" v-on:toastRecordClicked="onRecordClicked"></record-reminder>
-      <jitsi v-bind:hidden="jitsiHidden" v-on:mainRecordClicked="onRecordClicked"></jitsi>
+      <not-jitsi></not-jitsi>
     </div>
     <div class="col-2">
       <chat-box></chat-box>
@@ -21,14 +27,15 @@ import ChatBox from "@/components/liveSession/chatBox";
 import RecordReminder from "@/components/liveSession/recordReminder";
 import PdfUploader from "@/components/pdf/pdfUploader";
 import PdfDocument from "@/components/pdf/pdfDocument";
-import Jitsi from "./liveSession/jitsi";
+//import Jitsi from "./liveSession/jitsi";
+import NotJitsi from "@/components/liveSession/notJitsi";
 
 const room = location.pathname;
 
 export default {
   name: "live",
   // eslint-disable-next-line vue/no-unused-components
-  components: {Jitsi, PdfDocument, PdfUploader, RecordReminder, ChatBox},
+  components: {NotJitsi, PdfDocument, PdfUploader, RecordReminder, ChatBox},
   data() {
     return {
       isRecoding: false,
