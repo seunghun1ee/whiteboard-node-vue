@@ -17,6 +17,10 @@
       <div class="mb-5">
         <p>{{post.body}}</p>
       </div>
+      <div v-if="post.answered">
+        <h4>Answer</h4>
+        <comment v-bind:comment-data="post.comments[answerCommentIndex]" v-bind:post-answered="post.answered"></comment>
+      </div>
       <br>
       <small v-if="post.comments.length === 1" :key="post.comments.length">1 Comment</small>
       <small v-else :key="post.comments.length">{{post.comments.length}} Comments</small>
@@ -47,7 +51,8 @@ export default {
       dateFormatOption: {
         dateStyle: "medium",
         timeStyle: "medium"
-      }
+      },
+      answerCommentIndex: null
     }
   },
   sockets: {
@@ -66,7 +71,12 @@ export default {
     getPostById(postId)
         .then(data => {
           this.post = data;
-          console.log(data);
+          for(let i = 0; i < this.post.comments.length; i++) {
+            if(this.post.comments[i].answer) {
+              this.answerCommentIndex = i;
+              break;
+            }
+          }
         })
         .catch(err => alert(err));
   },
