@@ -7,7 +7,11 @@
     <div class="row row-cols-1 row-cols-sm-3">
       <div class="col">
         <h3>Live Exam</h3>
-        <p>You don't have any live exams now</p>
+        <ul>
+          <li>
+            <p><a href="#">COMS10005 Artificial Intelligence</a></p>
+          </li>
+        </ul>
       </div>
       <div class="col">
         <h3>Exam today</h3>

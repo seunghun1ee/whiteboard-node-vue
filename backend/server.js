@@ -2,20 +2,20 @@
 require("dotenv").config();
 
 // SSL
-const fs = require("fs");
-const privateKey = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/privkey.pem`);
-const certificate = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/cert.pem`);
-const chain = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/chain.pem`);
-const credentials = {key: privateKey, cert: certificate, chain: chain};
+// const fs = require("fs");
+// const privateKey = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/privkey.pem`);
+// const certificate = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/cert.pem`);
+// const chain = fs.readFileSync(`${process.env.CERTIFICATE_LOCATION}/chain.pem`);
+// const credentials = {key: privateKey, cert: certificate, chain: chain};
 
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
-const https = require("https").createServer(credentials,app);
+// const https = require("https").createServer(credentials,app);
 const port = 80;
 const path = require("path");
 const cors = require("cors");
-const io = require("socket.io")(https, {
+const io = require("socket.io")(http, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
@@ -476,4 +476,4 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
     console.log('listening on *:' + port);
 });
-https.listen(443);
+// https.listen(443);

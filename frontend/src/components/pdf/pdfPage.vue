@@ -44,7 +44,6 @@ export default {
       const canvasContext = this.$el.getContext('2d');
       const renderContext = {canvasContext, viewport};
 
-      // PDFPageProxy#render
       this.renderTask = this.page.render(renderContext);
       this.renderTask.promise.then(() => {
         this.$emit('rendered', this.page);
